@@ -28,7 +28,6 @@ public class FliBeaconApplication extends Application {
         setupDagger();
         bus.register(this);
         handler = new Handler();
-
     }
 
     protected void setupDagger() {

@@ -30,6 +30,11 @@ public class FliBeaconModule {
     }
 
     @Provides
+    public FliBeaconApplication providesFliBeaconApplication() {
+        return this.fliBeaconApplication;
+    }
+
+    @Provides
     @Singleton
     public Bus providesEventBus() {
         return new Bus(ThreadEnforcer.ANY);

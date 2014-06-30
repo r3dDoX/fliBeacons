@@ -81,13 +81,7 @@ public class MainActivity extends BaseActivity implements IBeaconConsumer {
         iBeaconManager.setRangeNotifier(new RangeNotifier() {
             @Override
             public void didRangeBeaconsInRegion(final Collection<IBeacon> iBeacons, final Region region) {
-                distanceTextView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        bus.post(new RangeEvent(iBeacons, region));
-
-                    }
-                });
+                fliBeaconApplication.postEvent(new RangeEvent(iBeacons, region));
             }
         });
 
