@@ -8,10 +8,9 @@ import java.util.UUID;
  */
 public class DroneStore {
 
-    private Map<UUID, Drone> drones;
+    private Map<String, Drone> drones;
 
-
-    public Map<UUID, Drone> getDrones() {
+    public Map<String, Drone> getDrones() {
         return drones;
     }
 
@@ -20,7 +19,7 @@ public class DroneStore {
     }
 
     public void addDrone(Drone drone){
-        UUID uuid = drone.getBeacon().getUuid();
+        String uuid = drone.getBeacon().getUuid();
         if(!drones.containsKey(uuid)){
             drones.put(uuid, drone);
         }

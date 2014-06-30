@@ -6,15 +6,15 @@ import java.util.UUID;
  * Created by lufr on 30.06.2014.
  */
 public class Beacon {
-    private UUID uuid;
+    private String uuid;
     private int major;
     private int minor;
 
-    public UUID getUuid() {
+    public String getUuid() {
         return uuid;
     }
 
-    public void setUuid(UUID uuid) {
+    public void setUuid(String uuid) {
         this.uuid = uuid;
     }
 
