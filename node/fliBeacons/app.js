@@ -1,4 +1,4 @@
-var express = require('express');
+var express = require('express.io');
 var http = require('http');
 var path = require('path');
 var favicon = require('static-favicon');
@@ -8,6 +8,8 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes');
 var users = require('./routes/user');
+var eventHandlers = require('./websocket/event-handlers').handlers;
+
 
 var app = express();
 
@@ -33,6 +35,15 @@ app.use(function(req, res, next) {
     err.status = 404;
     next(err);
 });
+
+
+// websocket initialitation
+var io = app.http().io();
+
+var eventName;
+for (eventName in eventHandlers) {
+	app.io.route(eventName, eventHandlers[eventName]);
+}
 
 
 
