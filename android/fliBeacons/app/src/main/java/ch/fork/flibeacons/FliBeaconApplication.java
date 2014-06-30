@@ -1,6 +1,7 @@
 package ch.fork.flibeacons;
 
 import android.app.Application;
+import android.content.Intent;
 import android.os.Handler;
 
 import com.squareup.otto.Bus;
@@ -28,6 +29,9 @@ public class FliBeaconApplication extends Application {
         setupDagger();
         bus.register(this);
         handler = new Handler();
+
+
+        startService(new Intent(this, FliBeaconService.class));
     }
 
     protected void setupDagger() {
