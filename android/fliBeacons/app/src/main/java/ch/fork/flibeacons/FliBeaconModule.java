@@ -1,0 +1,36 @@
+package ch.fork.flibeacons;
+
+import android.content.Context;
+
+import com.squareup.otto.Bus;
+import com.squareup.otto.ThreadEnforcer;
+
+import javax.inject.Singleton;
+
+import dagger.Module;
+import dagger.Provides;
+
+/**
+ * Created by fork on 30.06.14.
+ */
+
+@Module(
+        injects = {MainActivity.class},
+        library = true
+)
+public class FliBeaconModule {
+
+    private final Context context;
+    private FliBeaconApplication fliBeaconApplication;
+
+    FliBeaconModule(FliBeaconApplication adHocRailwayApplication) {
+        this.fliBeaconApplication = adHocRailwayApplication;
+        this.context = fliBeaconApplication.getApplicationContext();
+    }
+
+    @Provides
+    @Singleton
+    public Bus providesEventBus() {
+        return new Bus(ThreadEnforcer.ANY);
+    }
+}
