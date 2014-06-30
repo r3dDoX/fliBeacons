@@ -41,6 +41,6 @@ dependencies {
     compile 'com.squareup.dagger:dagger:1.+'
     provided 'com.squareup.dagger:dagger-compiler:1.+'
     compile 'com.jakewharton:butterknife:5.+'
-    compile 'com.koushikdutta.async:androidasync:1.2.+'
+    compile 'com.github.nkzawa:socket.io-client:0.1.+'
 
 }
