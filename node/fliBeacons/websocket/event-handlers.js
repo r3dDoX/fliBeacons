@@ -1,11 +1,6 @@
 var sockets = {},
     ready = function(req) {
         sockets[req.socket.id] = {};
-
-        req.io.emit('ack', {
-            type: 'ready',
-            message: 'Hello there'
-        });
     }, 
     
     disconnect = function(req) {
