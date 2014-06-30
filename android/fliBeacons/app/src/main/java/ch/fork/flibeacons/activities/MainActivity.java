@@ -1,9 +1,16 @@
 package ch.fork.flibeacons.activities;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.radiusnetworks.ibeacon.IBeacon;
@@ -16,31 +23,85 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import ch.fork.flibeacons.FliBeaconApplication;
+import ch.fork.flibeacons.FliBeaconService;
 import ch.fork.flibeacons.R;
 import ch.fork.flibeacons.events.RangeEvent;
 
 
 public class MainActivity extends BaseActivity {
 
+
     protected static final String TAG = "RangingActivity";
     @InjectView(R.id.distanceTextView)
     TextView distanceTextView;
     @InjectView(R.id.rangeTextView)
     TextView rangeTextView;
-
+    @InjectView(R.id.startRanging)
+    Button startRangingButton;
+    @InjectView(R.id.stopRanging)
+    Button stopRangingButton;
     @Inject
     FliBeaconApplication fliBeaconApplication;
+    private FliBeaconService fliBeaconService;
+    private boolean bound;
+    /**
+     * Defines callbacks for service binding, passed to bindService()
+     */
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            FliBeaconService.FliBeaconBinder binder = (FliBeaconService.FliBeaconBinder) service;
+            fliBeaconService = binder.getService();
+            bound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            bound = false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
+
+        startRangingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fliBeaconService.startBeaconRanging();
+            }
+        });
+
+        stopRangingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                distanceTextView.setText("");
+                rangeTextView.setText("");
+                fliBeaconService.stopBeaconRanging();
+            }
+        });
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStart() {
+        super.onStart();
+        Intent intent = new Intent(this, FliBeaconService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // Unbind from the service
+        if (bound) {
+            unbindService(mConnection);
+            bound = false;
+        }
     }
 
     @Subscribe
@@ -62,7 +123,6 @@ public class MainActivity extends BaseActivity {
             }
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

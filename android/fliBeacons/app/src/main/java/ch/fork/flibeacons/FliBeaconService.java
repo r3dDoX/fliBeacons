@@ -2,10 +2,10 @@ package ch.fork.flibeacons;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.radiusnetworks.ibeacon.IBeacon;
 import com.radiusnetworks.ibeacon.IBeaconConsumer;
@@ -23,6 +23,10 @@ import ch.fork.flibeacons.events.RangeEvent;
 
 public class FliBeaconService extends Service implements IBeaconConsumer {
     protected static final String TAG = FliBeaconService.class.getSimpleName();
+
+    // Binder given to clients
+    private final IBinder mBinder = new FliBeaconBinder();
+    private final Region region;
     @Inject
     FliBeaconApplication fliBeaconApplication;
     @Inject
@@ -30,6 +34,8 @@ public class FliBeaconService extends Service implements IBeaconConsumer {
     private IBeaconManager iBeaconManager = IBeaconManager.getInstanceForApplication(this);
 
     public FliBeaconService() {
+
+        region = new Region("myRangingUniqueId", null, null, null);
     }
 
     @Override
@@ -37,30 +43,35 @@ public class FliBeaconService extends Service implements IBeaconConsumer {
         super.onCreate();
         FliBeaconApplication fliBeaconApplication = (FliBeaconApplication) getApplication();
         fliBeaconApplication.inject(this);
-
+        iBeaconManager.bind(this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
         iBeaconManager.unBind(this);
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
-
-        iBeaconManager.bind(this);
-
-        // If we get killed, after returning from here, restart
-        return START_STICKY;
+    public IBinder onBind(Intent intent) {
+        return mBinder;
     }
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
+    public void startBeaconRanging() {
+        try {
+            iBeaconManager.startRangingBeaconsInRegion(region);
+            iBeaconManager.startMonitoringBeaconsInRegion(region);
+        } catch (RemoteException e) {
+        }
+    }
+
+    public void stopBeaconRanging() {
+
+        try {
+            iBeaconManager.stopMonitoringBeaconsInRegion(region);
+            iBeaconManager.stopRangingBeaconsInRegion(region);
+        } catch (RemoteException e) {
+        }
     }
 
     @Override
@@ -90,12 +101,13 @@ public class FliBeaconService extends Service implements IBeaconConsumer {
                 Log.i(TAG, "I have just switched from seeing/not seeing iBeacons: " + state);
             }
         });
-        try {
-            iBeaconManager.startRangingBeaconsInRegion(new Region("myRangingUniqueId", null, null, null));
-            iBeaconManager.startMonitoringBeaconsInRegion(new Region("myMonitoringUniqueId", null, null, null));
-        } catch (RemoteException e) {
+
+
+    }
+
+    public class FliBeaconBinder extends Binder {
+        public FliBeaconService getService() {
+            return FliBeaconService.this;
         }
-
-
     }
 }

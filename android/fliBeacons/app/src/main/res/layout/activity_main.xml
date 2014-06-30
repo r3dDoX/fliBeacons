@@ -9,6 +9,26 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/startRanging"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start ranging" />
+
+        <Button
+            android:id="@+id/stopRanging"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="Stop ranging" />
+    </LinearLayout>
+
     <TextView
         android:id="@+id/distanceTextView"
         android:layout_width="wrap_content"
