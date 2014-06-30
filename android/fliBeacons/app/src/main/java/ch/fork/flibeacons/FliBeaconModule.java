@@ -8,15 +8,15 @@ import com.squareup.otto.ThreadEnforcer;
 import javax.inject.Singleton;
 
 import ch.fork.flibeacons.activities.MainActivity;
+import ch.fork.flibeacons.activities.SettingsActivity;
 import dagger.Module;
 import dagger.Provides;
 
 /**
  * Created by fork on 30.06.14.
  */
-
 @Module(
-        injects = {FliBeaconApplication.class, MainActivity.class, FliBeaconService.class},
+        injects = {FliBeaconApplication.class, MainActivity.class, FliBeaconService.class, SettingsActivity.class},
         library = true
 )
 public class FliBeaconModule {

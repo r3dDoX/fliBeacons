@@ -1,7 +1,5 @@
 package ch.fork.flibeacons.model;
 
-import java.util.UUID;
-
 /**
  * Created by lufr on 30.06.2014.
  */
