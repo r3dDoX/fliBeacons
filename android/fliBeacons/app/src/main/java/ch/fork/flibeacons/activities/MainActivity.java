@@ -1,6 +1,5 @@
 package ch.fork.flibeacons.activities;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
@@ -14,21 +13,31 @@ import com.radiusnetworks.ibeacon.MonitorNotifier;
 import com.radiusnetworks.ibeacon.RangeNotifier;
 import com.radiusnetworks.ibeacon.Region;
 import com.radiusnetworks.proximity.ibeacon.IBeaconManager;
+import com.squareup.otto.Subscribe;
 
 import java.util.Collection;
 
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import ch.fork.flibeacons.FliBeaconApplication;
 import ch.fork.flibeacons.R;
+import ch.fork.flibeacons.events.RangeEvent;
 
 
-public class MainActivity extends Activity implements IBeaconConsumer {
+public class MainActivity extends BaseActivity implements IBeaconConsumer {
 
     protected static final String TAG = "RangingActivity";
     @InjectView(R.id.distanceTextView)
     TextView distanceTextView;
     @InjectView(R.id.rangeTextView)
     TextView rangeTextView;
+
+    @Inject
+    FliBeaconApplication fliBeaconApplication;
+
+
     private IBeaconManager iBeaconManager = IBeaconManager.getInstanceForApplication(this);
 
     @Override
@@ -38,8 +47,6 @@ public class MainActivity extends Activity implements IBeaconConsumer {
         iBeaconManager.bind(this);
 
         ButterKnife.inject(this);
-
-
     }
 
     @Override
@@ -48,33 +55,39 @@ public class MainActivity extends Activity implements IBeaconConsumer {
         iBeaconManager.unBind(this);
     }
 
+    @Subscribe
+    public void onRange(RangeEvent event) {
+        final Collection<IBeacon> iBeacons = event.getBeacons();
+        if (iBeacons.size() > 0) {
+            IBeacon iBeacon = iBeacons.iterator().next();
+            Log.i(TAG, "The first iBeacon I see is about " + iBeacon.getAccuracy() + " meters away.");
+            distanceTextView.setText("" + iBeacon.getAccuracy());
+            int proximity = iBeacon.getProximity();
+            if (proximity == IBeacon.PROXIMITY_FAR) {
+                rangeTextView.setText("FAR");
+            } else if (proximity == IBeacon.PROXIMITY_NEAR) {
+                rangeTextView.setText("NEAR");
+            } else if (proximity == IBeacon.PROXIMITY_IMMEDIATE) {
+                rangeTextView.setText("IMMEDIATE");
+            } else {
+                rangeTextView.setText("UNKNOWN");
+            }
+        }
+    }
+
     @Override
     public void onIBeaconServiceConnect() {
 
         iBeaconManager.setRangeNotifier(new RangeNotifier() {
             @Override
-            public void didRangeBeaconsInRegion(final Collection<IBeacon> iBeacons, Region region) {
+            public void didRangeBeaconsInRegion(final Collection<IBeacon> iBeacons, final Region region) {
                 distanceTextView.post(new Runnable() {
                     @Override
                     public void run() {
-                        if (iBeacons.size() > 0) {
-                            IBeacon iBeacon = iBeacons.iterator().next();
-                            Log.i(TAG, "The first iBeacon I see is about " + iBeacon.getAccuracy() + " meters away.");
-                            distanceTextView.setText("" + iBeacon.getAccuracy());
-                            int proximity = iBeacon.getProximity();
-                            if (proximity == IBeacon.PROXIMITY_FAR) {
-                                rangeTextView.setText("FAR");
-                            } else if (proximity == IBeacon.PROXIMITY_NEAR) {
-                                rangeTextView.setText("NEAR");
-                            } else if (proximity == IBeacon.PROXIMITY_IMMEDIATE) {
-                                rangeTextView.setText("IMMEDIATE");
-                            } else {
-                                rangeTextView.setText("UNKNOWN");
-                            }
-                        }
+                        bus.post(new RangeEvent(iBeacons, region));
+
                     }
                 });
-
             }
         });
 

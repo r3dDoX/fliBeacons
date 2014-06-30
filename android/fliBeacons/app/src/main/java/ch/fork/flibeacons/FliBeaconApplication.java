@@ -1,9 +1,14 @@
 package ch.fork.flibeacons;
 
 import android.app.Application;
+import android.os.Handler;
+
+import com.squareup.otto.Bus;
 
 import java.util.Arrays;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import dagger.ObjectGraph;
 
@@ -12,7 +17,19 @@ import dagger.ObjectGraph;
  */
 public class FliBeaconApplication extends Application {
 
+    @Inject
+    Bus bus;
     private ObjectGraph objectGraph;
+    private Handler handler;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        setupDagger();
+        bus.register(this);
+        handler = new Handler();
+
+    }
 
     protected void setupDagger() {
         Object[] modules = getModules().toArray();
@@ -31,5 +48,13 @@ public class FliBeaconApplication extends Application {
         return objectGraph.inject(obj);
     }
 
+    public void postEvent(final Object event) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                bus.post(event);
+            }
+        });
+    }
 
 }
