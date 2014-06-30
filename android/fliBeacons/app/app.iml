@@ -65,7 +65,6 @@
     <orderEntry type="library" exported="" name="guava-15.0" level="project" />
     <orderEntry type="library" exported="" name="javawriter-2.3.0" level="project" />
     <orderEntry type="library" exported="" name="dagger-1.2.1" level="project" />
-    <orderEntry type="library" exported="" name="AndroidIBeaconLibrary" level="project" />
     <orderEntry type="library" exported="" name="androidasync-1.2.6" level="project" />
     <orderEntry type="library" exported="" name="butterknife-5.1.1" level="project" />
     <orderEntry type="library" exported="" name="javax.inject-1" level="project" />
