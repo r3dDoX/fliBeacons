@@ -1,4 +1,4 @@
-package ch.fork.flibeacons;
+package ch.fork.flibeacons.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -19,6 +19,7 @@ import java.util.Collection;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import ch.fork.flibeacons.R;
 
 
 public class MainActivity extends Activity implements IBeaconConsumer {

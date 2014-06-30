@@ -7,6 +7,7 @@ import com.squareup.otto.ThreadEnforcer;
 
 import javax.inject.Singleton;
 
+import ch.fork.flibeacons.activities.MainActivity;
 import dagger.Module;
 import dagger.Provides;
 
