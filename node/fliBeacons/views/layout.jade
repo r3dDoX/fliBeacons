@@ -1,7 +1,19 @@
 doctype html
 html
-  head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-  body
-    block content
+	head
+		title= title
+		link(href="stylesheets/style.css" rel="stylesheet", type="text/css")
+		meta(name="viewport", content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes")
+		meta(name="mobile-web-app-capable", content="yes")
+		meta(name="apple-mobile-web-app-capable", content="yes")
+		meta(name="apple-mobile-web-app-status-bar-style", content="black")
+		meta(name="apple-mobile-web-app-title", content="Web Starter Kit")
+	
+		script(src="/components/platform/platform.js")
+		link(rel="import", href="/components/font-roboto/roboto.html")
+		link(rel="import", href="/components/core-header-panel/core-header-panel.html")
+		link(rel="import", href="/components/core-toolbar/core-toolbar.html")
+		link(rel="import", href="/components/paper-tabs/paper-tabs.html")
+		link(rel="import", href="/components/paper-button/paper-button.html")
+	body
+		block content

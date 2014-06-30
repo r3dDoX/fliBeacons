@@ -5,3 +5,42 @@ body {
 a {
   color: #00B7FF;
 }
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background-color: #E5E5E5;
+  font-family: 'RobotoDraft', sans-serif;
+  padding: 0 !important;
+}
+core-header-panel {
+  height: 100%;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+core-toolbar {
+  background: darkred;
+  color: white;
+}
+paper-tabs {
+  width: 100%;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.container {
+  width: 100%;
+}
+.panel {
+  box-shadow: -2px -2px 12px #999999, 2px 2px 12px #999999;
+  float: left;
+  padding: 12px;
+  margin: 12px 0 0 12px;
+  width: 30%;
+}
+@media (min-width: 481px) {
+  paper-tabs {
+    width: 200px;
+  }
+}
