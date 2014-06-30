@@ -1,6 +1,6 @@
 var sockets = {},
     ready = function(req) {
-        sockets[req.socket.id] = req.socket;
+        sockets[req.socket.id] = {};
 
         req.io.emit('ack', {
             type: 'ready',
@@ -10,9 +10,23 @@ var sockets = {},
     
     disconnect = function(req) {
         delete sockets[req.socket.id];
+    },
+    
+    drone = function(req) {
+        var data = req.data;
+        
+        if (data) {
+            req.io.manager.sockets.emit('drone', data);
+        }
+    },
+    
+    baseStation = function(req) {
+        sockets[req.socket.id].baseStation = req.data;
     };
 
 exports.handlers = {
 	ready: ready,
-    disconnect: disconnect
+    disconnect: disconnect,
+    drone: drone,
+    baseStation: baseStation
 };
