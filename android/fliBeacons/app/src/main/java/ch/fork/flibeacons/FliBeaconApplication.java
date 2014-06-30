@@ -8,13 +8,17 @@ import android.content.ServiceConnection;
 import android.os.Handler;
 import android.os.IBinder;
 
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
 import com.squareup.otto.Bus;
 
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import ch.fork.flibeacons.services.FliLocationService;
 import dagger.ObjectGraph;
 
 /**
@@ -25,16 +29,17 @@ public class FliBeaconApplication extends Application {
     @Inject
     Bus bus;
     private FliBeaconService fliBeaconService;
+
+    private FliLocationService fliLocationService;
+
     private ObjectGraph objectGraph;
     private Handler handler;
     private boolean bound;
-    /** Defines callbacks for service binding, passed to bindService() */
-    private ServiceConnection mConnection = new ServiceConnection() {
+    private ServiceConnection beaconServiceConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
             FliBeaconService.FliBeaconBinder binder = (FliBeaconService.FliBeaconBinder) service;
             fliBeaconService = binder.getService();
             bound = true;
@@ -45,6 +50,22 @@ public class FliBeaconApplication extends Application {
             bound = false;
         }
     };
+    private ServiceConnection locationServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            FliLocationService.FliLocationBinder binder = (FliLocationService.FliLocationBinder) service;
+            fliLocationService = binder.getService();
+            bound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            bound = false;
+        }
+    };
+    private Socket socket;
 
     @Override
     public void onCreate() {
@@ -54,9 +75,16 @@ public class FliBeaconApplication extends Application {
         handler = new Handler();
 
         Intent intent = new Intent(this, FliBeaconService.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        bindService(intent, beaconServiceConnection, Context.BIND_AUTO_CREATE);
+        Intent locationIntent = new Intent(this, FliLocationService.class);
+        bindService(locationIntent, locationServiceConnection, Context.BIND_AUTO_CREATE);
 
-        //startService(new Intent(this, FliBeaconService.class));
+
+        try {
+            socket = IO.socket("http://flibeacons1.ngrok.com");
+        } catch (URISyntaxException e) {
+        }
+
     }
 
     @Override
@@ -64,9 +92,13 @@ public class FliBeaconApplication extends Application {
         super.onTerminate();
         // Unbind from the service
         if (bound) {
-            unbindService(mConnection);
+            unbindService(beaconServiceConnection);
             bound = false;
         }
+    }
+
+    public Socket getSocket() {
+        return socket;
     }
 
     protected void setupDagger() {

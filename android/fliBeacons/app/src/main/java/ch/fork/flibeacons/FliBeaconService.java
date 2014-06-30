@@ -34,7 +34,6 @@ public class FliBeaconService extends Service implements IBeaconConsumer {
     private IBeaconManager iBeaconManager = IBeaconManager.getInstanceForApplication(this);
 
     public FliBeaconService() {
-
         region = new Region("myRangingUniqueId", null, null, null);
     }
 

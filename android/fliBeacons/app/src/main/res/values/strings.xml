@@ -6,5 +6,6 @@
     <string name="action_settings">Settings</string>
     <string name="pref_default_basestationName">basestation 1</string>
     <string name="pref_title_baseStationName">Basestation Name</string>
+    <string name="title_activity_start">StartActivity</string>
 
 </resources>

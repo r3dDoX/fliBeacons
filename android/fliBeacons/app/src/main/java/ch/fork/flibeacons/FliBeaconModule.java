@@ -16,7 +16,7 @@ import dagger.Provides;
  * Created by fork on 30.06.14.
  */
 @Module(
-        injects = {FliBeaconApplication.class, MainActivity.class, FliBeaconService.class, SettingsActivity.class},
+        injects = {FliBeaconApplication.class, MainActivity.class, FliBeaconService.class, StartActivity.class, SettingsActivity.class},
         library = true
 )
 public class FliBeaconModule {
