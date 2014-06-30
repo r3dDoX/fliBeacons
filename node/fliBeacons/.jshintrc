@@ -1,0 +1,79 @@
+
+{
+  /*** Globals ***/
+  // To ignore any custom global variables, enable the `predef` option and list
+  // your variables within it.
+  /*
+  "predef": [
+  ],
+  */
+
+  /*** Enforcing options ***/
+  // Set these to `true` to enforce, or `false` to relax.
+  "bitwise":      true,
+  "curly":        true,
+  "eqeqeq":       true,
+  "forin":        true,
+  "immed":        true,
+  "latedef":      true,
+  "newcap":       true,
+  "noarg":        true,
+  "noempty":      true,
+  "nonew":        false,
+  "plusplus":     false,
+  "regexp":       false,
+  "undef":        true,
+  "strict":       false,
+  "trailing":     true,
+  "unused": 	  true,
+
+  /*** Relaxing options ***/
+  // Set these to `true` to relax, or `false` to enforce.
+  "asi":          false,
+  "boss":         false,
+  "debug":        false,
+  "eqnull":       false,
+  "es5":          true,
+  "esnext":       true,
+  "evil":         false,
+  "expr":         false,
+  "funcscope":    false,
+  "globalstrict": false,
+  "iterator":     false,
+  "lastsemic":    false,
+  "laxbreak":     false,
+  "laxcomma":     false,
+  "loopfunc":     false,
+  "multistr":     false,
+  "onecase":      false,
+  "proto":        false,
+  "regexdash":    false,
+  "scripturl":    false,
+  "shadow":       false,
+  "smarttabs":    false,
+  "sub":          false,
+  "supernew":     false,
+  "validthis":    false,
+
+  /*** Environments ***/
+  // Set each environment that you're using to `true`.
+  "browser":      false,
+  "couch":        false,
+  "devel":        false,
+  "dojo":         false,
+  "jquery":       false,
+  "mootools":     false,
+  "node":         true,
+  "nonstandard":  false,
+  "prototypejs":  false,
+  "rhino":        false,
+  "wsh":          false,
+
+  /*** Legacy from JSLint ***/
+  // Set these to `true` to enforce, or `false` to relax.
+  "nomen":        false,
+  "onevar":       false,
+  "passfail":     false,
+  "white":        false
+}
+
