@@ -1,4 +1,4 @@
-var express = require('express');
+var express = require('express.io');
 var http = require('http');
 var path = require('path');
 var favicon = require('static-favicon');
@@ -9,7 +9,20 @@ var bodyParser = require('body-parser');
 var routes = require('./routes');
 var users = require('./routes/user');
 
+
 var app = express();
+
+var io = app.http().io();
+
+// Setup the ready route, and emit talk event.
+app.io.route('ready', function(req) {
+	console.log("ready and emit");
+	req.io.emit('talk', {
+		message: 'io event from an io route on the server'
+	});
+})
+
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
