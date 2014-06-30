@@ -8,21 +8,10 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes');
 var users = require('./routes/user');
+var eventHandlers = require('./websocket/event-handlers').handlers;
 
 
 var app = express();
-
-var io = app.http().io();
-
-// Setup the ready route, and emit talk event.
-app.io.route('ready', function(req) {
-	console.log("ready and emit");
-	req.io.emit('talk', {
-		message: 'io event from an io route on the server'
-	});
-})
-
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -46,6 +35,15 @@ app.use(function(req, res, next) {
     err.status = 404;
     next(err);
 });
+
+
+// websocket initialitation
+var io = app.http().io();
+
+var eventName;
+for (eventName in eventHandlers) {
+	app.io.route(eventName, eventHandlers[eventName]);
+}
 
 
 

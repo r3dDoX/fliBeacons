@@ -1,5 +1,5 @@
 var socket = io.connect();
 socket.emit('ready');
-socket.on('talk', function (data) {
+socket.on('ack', function (data) {
 	console.log(data);
 });
