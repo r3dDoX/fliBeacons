@@ -8,11 +8,11 @@ var sockets = {},
         });
     }, 
     
-    close = function(req) {
+    disconnect = function(req) {
         delete sockets[req.socket.id];
     };
 
 exports.handlers = {
 	ready: ready,
-    close: close
+    disconnect: disconnect
 };
