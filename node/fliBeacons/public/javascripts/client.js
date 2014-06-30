@@ -1,6 +1,7 @@
 (function () {
 	
 	var log = document.querySelector("#log"),
+		baseStations = [],
 		addMessage = function (name, msg) {
 			var el = document.createElement("div"),
 				buf = "<label>" + name + "</label>";
@@ -10,13 +11,18 @@
 			el.innerHTML = buf;
 			el.classList.add("panel");
 			log.appendChild(el);
+		},
+		onBaseStationState = function (data) {
+			
 		};
 	
 	var socket = io.connect();
-	socket.emit('ready');
+	socket.emit('ready', {
+		clientType: "monitor"
+	});
 
 	socket.on("ready", function (data) {
-		console.log("receveived 'ready' event", data);
+		onBasestationState(data);
 	});
 	socket.on("close", function (data) {
 		console.log("receveived 'close' event", data);
