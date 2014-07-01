@@ -1,0 +1,146 @@
+<link rel="import" href="/components/polymer/polymer.html">
+
+<polymer-element name="fli-base-station" attributes="uuid, name, lat, lng">
+	<template>
+		<style>
+		:host {
+			border: solid 1px #ccc;
+			display: block;
+			float: left;
+			margin: 12px;
+			position: relative;
+			padding: 12px 4px 0 4px;
+			width: 280px;
+		}
+		h1 {
+			border-bottom: 1px solid #999;
+			color: #333;
+			padding: 0;
+			margin: 0 0 12px 0;
+			padding-bottom: 8px;
+			text-align: center;
+			font-weight: 400;
+		}
+		.station {
+			margin-top: 24px;
+		}
+		label {
+			font-weight: 400;
+			display: inline-block;
+		}
+		label:after {
+			margin-left: 12px;
+			margin-right: 12px;
+			content: "-";
+		}
+		span {
+			font-weight: 300;
+		}
+		.data-line {
+			text-align: center;
+		}
+		.drone {
+			background-color: #333;
+			border-radius: 50%;
+			display: block;
+			height: 24px;
+			left: 50%;
+			margin-left: -12px;
+			position: absolute;
+			top: 0;
+			width: 24px;
+			opacity: 0.7;
+			box-shadow: 1px 1px 4px #fff, -1px -1px 4px #fff;
+		}
+		.far {
+			top: 126px;
+		}
+		.far-multi .far.drone-1 {
+			margin-left: 56px;
+			margin-top: 24px;
+		}
+		.far-multi .far.drone-2 {
+			margin-left: -82px;
+			margin-top: 24px;
+		}
+		.near {
+			top: 188px;
+		}
+		.near-multi .near.drone-1 {
+			margin-left: 18px;
+			top: 196px;
+		}
+		.near-multi .near.drone-2 {
+			margin-left: -44px;
+			top: 196px;
+		}
+		.immediate {
+			top: 234px;
+			background-color: darkred;
+		}
+		.immediate-multi .immediate.drone-1 {
+			margin-left: -20px;
+		}
+		.immediate-multi .immediate.drone-2 {
+			margin-left: -4px;
+		}
+		</style>
+		<h1>{{name}}</h1>
+		<div class="data-line">
+			<label>Location</label>
+			<span>{{lat}}/{{lng}}</span>
+		</div>
+		<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="280" height="140" class="station">
+			<defs>
+				<clipPath id="rectClip">
+					<rect id="rect1" x="0" y="0" 
+						width="280" height="140"
+						style="stroke: gray; fill: none;"/>
+				</clipPath>
+			</defs>
+			<g clip-path="url(#rectClip)">
+				<circle id="base-circle" cx="140" cy="140" r="140" style="fill:#74ad82" />
+				<circle cx="140" cy="140" r="80" style="fill:#456a8e" />
+				<circle cx="140" cy="140" r="15" style="fill:#d19898" />
+			</g>
+		</svg>
+		<div id="drones"></div>
+  </template>
+
+	<script>
+	var renderDrone = function(drone) {
+		var el = document.createElement("div");
+		el.classList.add("drone");
+		el.title = drone.name;
+		if (drone.proximity) {
+			el.classList.add(drone.proximity);
+		}
+		return el;
+	};
+	
+    Polymer('fli-base-station', {
+		ready: function () {
+			this.drones = {
+				immediate: [],
+				near: [],
+				far: []
+			};
+		},
+		addDrone: function(drone) {
+			var el = renderDrone(drone),
+				proxDrones = this.drones[drone.proximity],
+				target = this.shadowRoot.querySelector("#drones");
+				
+			el.classList.add("drone-" + (proxDrones.length + 1));
+			proxDrones.push(drone);
+			if (proxDrones.length > 1) {
+				target.classList.add(drone.proximity + "-multi");
+			} else {
+				target.classList.remove(drone.proximity + "-multi");
+			}
+			target.appendChild(el);
+		}
+	});
+  </script>
+
+</polymer-element>
