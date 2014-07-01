@@ -14,8 +14,9 @@ block content
 				paper-button#station Send station event
 			#log
 		#game-container(style="display: none")
-			#stations
+			#stations.clearfix
 			#map
+				google-map(latitude='47.670162', longitude='8.95015', disableDefaultUI, showCenterMarker, zoom='15')
 			#ranking
 				fli-ranking
 
@@ -23,4 +24,4 @@ block content
 	script(src="/socket.io/socket.io.js")
 	script(src="javascripts/client.js")
 	script(src="javascripts/monitor.js")
-	
+	script(src="javascripts/map.js")

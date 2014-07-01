@@ -52,6 +52,7 @@
 		} else {
 			monitor.style.display = "none";
 			game.style.display = "block";
+            global.messageBus.fire("mapSelected");
 		}
 	});
 	
@@ -98,13 +99,15 @@
 	}, false);
 	
 	document.querySelector("#station").addEventListener("click", function () {
-		stationCreatedCount++;
+		var max = 0.01,
+            min = -0.01;
+        stationCreatedCount++;
 		socket.emit("baseStation", {
 			id: "id-" + stationCreatedCount,
 			name: "Station " + stationCreatedCount,
 			id: "station-" + stationCreatedCount,
-			lat: 32.333232,
-			lng: 13.31210
+			lat: 47.670162 + Math.random() * (max - min) + min,
+			lng: 8.95015 + Math.random() * (max - min) + min
 		});
 	}, false);
 } (this));
