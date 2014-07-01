@@ -4,12 +4,8 @@ var baseStations = [],
     droneEvent = 'drone',
     baseStationUpdateEvent = 'baseStationUpdate',
     
-    sendBaseStations = function(req) {
-        req.socket.emit(baseStationUpdateEvent, baseStations);
-    },
-    
-    sendUpdatedBaseStations = function(req) {
-        req.io.manager.sockets.in(monitorRoom).emit(baseStationUpdateEvent, baseStations);
+    sendUpdatedBaseStations = function(sockets) {
+        sockets.emit(baseStationUpdateEvent, baseStations);
     },
     
     ready = function(req) {
@@ -18,7 +14,7 @@ var baseStations = [],
         switch (data.clientType) {
             case 'monitor':
                 req.socket.join(monitorRoom);
-                sendBaseStations(req);
+                sendUpdatedBaseStations(req.socket);
                 break;
             case 'baseStation':
                 baseStations.push({ id: req.socket.id });
@@ -45,7 +41,7 @@ var baseStations = [],
     
     baseStation = function(req) {
         baseStations[req.socket.id].baseStation = req.data;
-        sendUpdatedBaseStations(req);
+        sendUpdatedBaseStations(req.io.manager.sockets.in(monitorRoom));
     };
 
 exports.handlers = {
