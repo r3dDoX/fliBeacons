@@ -62,7 +62,7 @@
 	// prototyping
 	document.querySelector("#drone-near").addEventListener("click", function () {
 		socket.emit("drone", {
-			type: "entered",
+			type: "moved",
 			proximity: "near",
 			baseStationId: global.activatedStation || "station-1",
 			distance: 2,
@@ -75,7 +75,7 @@
 	}, false);
 	document.querySelector("#drone-immediate").addEventListener("click", function () {
 		socket.emit("drone", {
-			type: "entered",
+			type: "removed",
 			proximity: "immediate",
 			baseStationId: "station-1",
 			distance: 2,

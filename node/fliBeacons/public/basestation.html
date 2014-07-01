@@ -112,6 +112,7 @@
 		var el = document.createElement("div");
 		el.classList.add("drone");
 		el.title = drone.name;
+		el.setAttribute("id", drone.beacon.uuid);
 		if (drone.proximity) {
 			el.classList.add(drone.proximity);
 		}
@@ -130,15 +131,27 @@
 			var el = renderDrone(drone),
 				proxDrones = this.drones[drone.proximity],
 				target = this.shadowRoot.querySelector("#drones");
+
+			proxDrones.push(drone);
 				
 			el.classList.add("drone-" + (proxDrones.length + 1));
-			proxDrones.push(drone);
 			if (proxDrones.length > 1) {
 				target.classList.add(drone.proximity + "-multi");
 			} else {
 				target.classList.remove(drone.proximity + "-multi");
 			}
 			target.appendChild(el);
+		},
+		removeDrone: function (drone) {
+			var droneEl = this.shadowRoot.getElementById(drone.beacon.uuid);
+			droneEl.parentNode.removeChild(droneEl);
+		},
+		moveDrone: function (drone) {
+			var droneEl = this.shadowRoot.getElementById(drone.beacon.uuid);
+			droneEl.classList.remove("near");
+			droneEl.classList.remove("far");
+			droneEl.classList.remove("immediate");
+			droneEl.classList.add(drone.proximity);
 		}
 	});
   </script>

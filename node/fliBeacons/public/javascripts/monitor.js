@@ -3,6 +3,18 @@
 		createId = function (id) {
 			return "a" + id.replace(" ", "-");
 		},
+		removeDrone = function (drone) {
+			var id = createId(drone.baseStationId),
+				stationEl = document.getElementById(id);
+				
+			stationEl.removeDrone(drone);
+		},
+		moveDrone = function (drone) {
+			var id = createId(drone.baseStationId),
+				stationEl = document.getElementById(id);
+				
+			stationEl.moveDrone(drone);
+		},
 		addDrone = function (drone) {
 			var el = document.createElement("div"),
 				buf = "<label>Drone</label>",
@@ -41,7 +53,6 @@
 		
 		
 	global.messageBus.register(function (event, data) {
-		console.log(event, data);
 		if (event === "baseStations") {
 			updateBaseStations(data);
 		} else if (event === "baseStationAdded") {
@@ -49,7 +60,13 @@
 		} else if (event === "baseStationRemoved") {
 			removeBaseStation(data);
 		} else if (event === "drone") {
-			addDrone(data);
+			if (data.type === "entered") {
+				addDrone(data);
+			} else if (data.type === "removed") {
+				removeDrone(data);
+			} else {
+				moveDrone(data);
+			}
 		} 
 	});
 	
