@@ -1,6 +1,6 @@
 (function (global) {
 	
-	var q = document.querySelector.bind(document),
+	var q = q.bind(document),
 		log = q("#log"),
 		stations = q("#stations"),
 		tabs = q('paper-tabs'),
@@ -62,11 +62,11 @@
 	
 	
 	// prototyping
-	document.querySelector("#drone-dialog").addEventListener("click", function () {
-		document.querySelector("#drone").toggle();
+	q("#drone-dialog").addEventListener("click", function () {
+		q("#drone").toggle();
 	}, false);
 	
-	document.querySelector("#send-drone").addEventListener("click", function () {
+	q("#send-drone").addEventListener("click", function () {
 		console.log(q("#type [checked]").getAttribute("name"));
 		socket.emit("drone", {
 			type: q("#type [checked]").getAttribute("name"),
@@ -81,7 +81,7 @@
 		});
 	});
 	
-	document.querySelector("#station").addEventListener("click", function () {
+	q("#station").addEventListener("click", function () {
 		stationCreatedCount++;
 		socket.emit("baseStation", {
 			id: "id-" + stationCreatedCount,
