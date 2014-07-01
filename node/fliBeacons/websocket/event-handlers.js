@@ -8,6 +8,18 @@ var baseStations = [],
         sockets.emit(baseStationUpdateEvent, baseStations);
     },
     
+    removeBaseStationOnDisconnect = function(req) {
+        var length = baseStations.length;
+        
+        baseStations = baseStations.filter(function(element) {
+            return element.id !== req.socket.id;
+        });
+        
+        if(length !== baseStations.length) {
+            sendUpdatedBaseStations(req.io.manager.sockets.in(monitorRoom));
+        }
+    },
+    
     ready = function(req) {
         var data = req.data || {};
         
@@ -23,11 +35,7 @@ var baseStations = [],
     }, 
     
     disconnect = function(req) {
-        var removeId = function(element) {
-            return element.id !== req.socket.id;
-        };
-        
-        baseStations = baseStations.filter(removeId);
+        removeBaseStationOnDisconnect(req.socket.id);
     },
     
     drone = function(req) {
