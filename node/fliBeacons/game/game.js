@@ -46,7 +46,7 @@ var drones = [{uuid: 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', major: '51881', min
     
     updateRanking = function(drone) {
         gameState.ranking.map(function(element) {
-            if (element.drone.uuid === element.uuid) {
+            if (element.drone.uuid === drone.beacon.uuid) {
                 element.points += 1;
             }
             
