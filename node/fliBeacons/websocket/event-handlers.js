@@ -5,6 +5,7 @@ var baseStations = [],
     baseStationsEvent = 'baseStations',
     baseStationRemovedEvent = 'baseStationRemoved',
     baseStationAddedEvent = 'baseStationAdded',
+    courseEvent = 'course',
     
     removeBaseStationOnDisconnect = function(req) {
         baseStations = baseStations.filter(function(element) {
@@ -50,16 +51,31 @@ var baseStations = [],
     },
     
     baseStation = function(req) {
-        var baseStation = req.data || {};
+        var baseStation = req.data || {},
+            alreadyAddedBaseStation = function(element) {
+                return element.id !== baseStation.id;
+            };
+        
         baseStation = enrichWithSocketId(req, baseStation);
+        baseStations = baseStations.filter(alreadyAddedBaseStation);
         
         baseStations.push(baseStation);
         req.io.manager.sockets.in(monitorRoom).emit(baseStationAddedEvent, baseStation);
+    },
+    
+    startCourse = function(req) {
+        var randomSorter = function() {
+            return (Math.round(Math.random())-0.5);
+        };
+        
+        req.socket.emit(courseEvent, baseStations.sort(randomSorter));
+        
     };
 
 exports.handlers = {
 	ready: ready,
     disconnect: disconnect,
     drone: drone,
-    baseStation: baseStation
+    baseStation: baseStation,
+    startCourse: startCourse
 };
