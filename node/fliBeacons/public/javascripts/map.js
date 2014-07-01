@@ -1,3 +1,8 @@
-/**
- * Created by fork on 01.07.14.
- */
+(function (global) {
+
+    global.messageBus.register(function(event, data) {
+
+    });
+
+
+}(this));
