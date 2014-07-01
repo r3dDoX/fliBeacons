@@ -2,6 +2,9 @@
 	
 	var log = document.querySelector("#log"),
 		stations = document.querySelector("#stations"),
+		tabs = document.querySelector('paper-tabs'),
+		monitor = document.querySelector(".container"),
+		game = document.querySelector("#game-container"),
 		createId = function (id) {
 			return "a" + id.replace(" ", "-");
 		},
@@ -68,6 +71,17 @@
 		clientType: "monitor"
 	});
 	
+
+	tabs.addEventListener('core-select', function() {
+		console.log(tabs.selected);
+		if (tabs.selected === 'monitor') {
+			monitor.style.display = "block";
+			game.style.display = "none";
+		} else {
+			monitor.style.display = "none";
+			game.style.display = "block";
+		}
+	});
 	
 	document.querySelector("#drone-near").addEventListener("click", function () {
 		socket.emit("drone", {

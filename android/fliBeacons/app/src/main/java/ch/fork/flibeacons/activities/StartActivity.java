@@ -43,7 +43,7 @@ public class StartActivity extends BaseActivity {
                 Ready ready = new Ready();
                 ready.setClientType("baseStation");
                 socket.emit("ready", new Gson().toJson(ready));
-
+                fliBeaconApplication.getFliLocationService().start();
                 startActivity(new Intent(StartActivity.this, MainActivity.class));
             }
         });

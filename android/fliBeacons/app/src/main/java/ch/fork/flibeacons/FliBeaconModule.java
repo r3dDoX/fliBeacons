@@ -10,6 +10,9 @@ import javax.inject.Singleton;
 import ch.fork.flibeacons.activities.MainActivity;
 import ch.fork.flibeacons.activities.SettingsActivity;
 import ch.fork.flibeacons.activities.StartActivity;
+import ch.fork.flibeacons.services.FliBeaconDroneService;
+import ch.fork.flibeacons.services.FliBeaconLocationService;
+import ch.fork.flibeacons.services.FliBeaconRangingService;
 import dagger.Module;
 import dagger.Provides;
 
@@ -17,7 +20,7 @@ import dagger.Provides;
  * Created by fork on 30.06.14.
  */
 @Module(
-        injects = {FliBeaconApplication.class, MainActivity.class, FliBeaconService.class, StartActivity.class, SettingsActivity.class, FliBeaconDroneService.class},
+        injects = {FliBeaconApplication.class, MainActivity.class, FliBeaconRangingService.class, StartActivity.class, SettingsActivity.class, FliBeaconDroneService.class, FliBeaconLocationService.class},
         library = true
 )
 public class FliBeaconModule {

@@ -23,9 +23,9 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import ch.fork.flibeacons.FliBeaconApplication;
-import ch.fork.flibeacons.FliBeaconService;
 import ch.fork.flibeacons.R;
 import ch.fork.flibeacons.events.RangeEvent;
+import ch.fork.flibeacons.services.FliBeaconRangingService;
 
 
 public class MainActivity extends BaseActivity {
@@ -43,7 +43,7 @@ public class MainActivity extends BaseActivity {
     @Inject
     FliBeaconApplication fliBeaconApplication;
 
-    private FliBeaconService fliBeaconService;
+    private FliBeaconRangingService fliBeaconService;
 
     private boolean bound;
 
@@ -52,7 +52,7 @@ public class MainActivity extends BaseActivity {
         @Override
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
-            FliBeaconService.FliBeaconBinder binder = (FliBeaconService.FliBeaconBinder) service;
+            FliBeaconRangingService.FliBeaconBinder binder = (FliBeaconRangingService.FliBeaconBinder) service;
             fliBeaconService = binder.getService();
             bound = true;
         }
@@ -89,7 +89,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Intent intent = new Intent(this, FliBeaconService.class);
+        Intent intent = new Intent(this, FliBeaconRangingService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
