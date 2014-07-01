@@ -1,21 +1,44 @@
 <link rel="import" href="/components/polymer/polymer.html">
 
 <polymer-element name="fli-ranking" attributes="">
-	<template>
+    <template>
 		<style>
 		:host {
 			border: solid 1px #ccc;
 		}
 		</style>
-		<h1>Ranking</h1>
-  </template>
-
-	<script>
-	
+		
+        <h1>Ranking</h1>
+        
+        <table>
+            <thead>
+                <th>#</th>
+                <th>Drone</th>
+                <th>Points</th>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+        
+        <button id="startGameButton">
+            Start New Game!
+        </button>
+    </template>
+    
+    <script>
     Polymer('fli-ranking', {
 		ready: function () {
-		}
+            this.shadowRoot.querySelector('#startGameButton').addEventListener('click', window.socket.emit('startCourse'));;
+		},
+        
+        update: function(rankingArray) {
+            window.messageBus.register(function (event, data) {
+                if (event === 'updated' || event === 'finished') {
+                    
+                }
+            });
+        }
 	});
-  </script>
-
+    </script>
 </polymer-element>

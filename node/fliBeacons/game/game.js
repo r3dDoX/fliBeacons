@@ -4,7 +4,7 @@ var drones = [{uuid: 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', major: '51881', min
     gameState = {},
     activateEvent = 'activate',
     finishedEvent = 'finished',
-    updateEvent = 'update',
+    updatedEvent = 'updated',
     
     isRunning = function() {
         return gameState.isRunning;
@@ -66,7 +66,7 @@ var drones = [{uuid: 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', major: '51881', min
             sockets.emit(finishedEvent, gameState);
         } else {
             sockets.emit(activateEvent, baseStations[++activeStation]);
-            sockets.emit(updateEvent, gameState);
+            sockets.emit(updatedEvent, gameState);
         }
     },
     
