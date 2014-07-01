@@ -7,33 +7,57 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
+import com.google.gson.JsonElement;
 import com.squareup.otto.Bus;
 
-import java.net.URISyntaxException;
+import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import ch.fork.flibeacons.events.ServerEvent;
 import ch.fork.flibeacons.services.FliLocationService;
 import dagger.ObjectGraph;
+import io.socket.IOAcknowledge;
+import io.socket.IOCallback;
+import io.socket.SocketIO;
+import io.socket.SocketIOException;
 
 /**
  * Created by fork on 30.06.14.
  */
 public class FliBeaconApplication extends Application {
 
+    private static final String TAG = FliBeaconApplication.class.getSimpleName();
     @Inject
     Bus bus;
     private FliBeaconService fliBeaconService;
     private FliBeaconDroneService fliBeaconDroneService;
     private boolean boundDroneService;
     /** Defines callbacks for service binding, passed to bindService() */
-    private FliLocationService fliLocationService;
+    private ServiceConnection droneServiceConnection = new ServiceConnection() {
 
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            FliBeaconDroneService.FliBeaconBinder binder = (FliBeaconDroneService.FliBeaconBinder) service;
+            fliBeaconDroneService = binder.getService();
+            boundDroneService = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            boundDroneService = false;
+        }
+    };
+    /**
+     * Defines callbacks for service binding, passed to bindService()
+     */
+    private FliLocationService fliLocationService;
     private ObjectGraph objectGraph;
     private Handler handler;
     private boolean bound;
@@ -67,25 +91,7 @@ public class FliBeaconApplication extends Application {
             bound = false;
         }
     };
-    private Socket socket;
-
-    /** Defines callbacks for service binding, passed to bindService() */
-    private ServiceConnection droneServiceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            FliBeaconDroneService.FliBeaconBinder binder = (FliBeaconDroneService.FliBeaconBinder) service;
-            fliBeaconDroneService = binder.getService();
-            boundDroneService = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            boundDroneService = false;
-        }
-    };
+    private SocketIO socket;
 
     @Override
     public void onCreate() {
@@ -103,13 +109,53 @@ public class FliBeaconApplication extends Application {
         bindService(intentDroneService, droneServiceConnection, Context.BIND_AUTO_CREATE);
 
         try {
-            socket = IO.socket("http://flibeacons1.ngrok.com");
-        } catch (URISyntaxException e) {
+            socket = new SocketIO("http://flibeacons1.ngrok.com/");
+            socket.connect(new IOCallback() {
+
+                @Override
+                public void onDisconnect() {
+
+                }
+
+                @Override
+                public void onConnect() {
+                    Log.i(TAG, "connected");
+                }
+
+                @Override
+                public void onMessage(String data, IOAcknowledge ack) {
+
+                }
+
+                @Override
+                public void onMessage(JsonElement json, IOAcknowledge ack) {
+
+                }
+
+                @Override
+                public void on(String event, IOAcknowledge ack, JsonElement... args) {
+                    Log.i(TAG, "received event: " + event + " --> " + args);
+
+                    postEvent(new ServerEvent(event, args));
+                }
+
+                @Override
+                public void onError(SocketIOException socketIOException) {
+
+                }
+            });
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
         }
 
 
         //startService(new Intent(this, FliBeaconService.class));
 
+    }
+
+    public SocketIO getSocket() {
+        return socket;
     }
 
     @Override
@@ -126,9 +172,6 @@ public class FliBeaconApplication extends Application {
         }
     }
 
-    public Socket getSocket() {
-        return socket;
-    }
 
     protected void setupDagger() {
         Object[] modules = getModules().toArray();

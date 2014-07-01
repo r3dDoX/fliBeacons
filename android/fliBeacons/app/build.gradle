@@ -28,6 +28,9 @@ android {
 
 repositories {
     mavenCentral()
+    maven {
+        url "http://audiobox.keytwo.net"
+    }
     flatDir {
         dirs 'libs'
     }
@@ -42,5 +45,8 @@ dependencies {
     compile 'com.squareup:otto:1.+'
     compile 'com.squareup.dagger:dagger:1.+'
     compile 'com.jakewharton:butterknife:5.+'
-    compile 'com.github.nkzawa:socket.io-client:0.1.+'
+    //compile 'com.github.nkzawa:socket.io-client:0.1.+'
+    compile 'io.socket:socket.io-client:0.2.1'
+    // You must install or update the Support Repository through the SDK manager to use this dependency.
+    compile 'com.android.support:support-v4:19.+'
 }

@@ -1,20 +1,22 @@
-package ch.fork.flibeacons;
+package ch.fork.flibeacons.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.Socket;
+import com.google.gson.Gson;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import ch.fork.flibeacons.activities.BaseActivity;
+import ch.fork.flibeacons.FliBeaconApplication;
+import ch.fork.flibeacons.R;
+import ch.fork.flibeacons.model.Ready;
+import io.socket.SocketIO;
 
 public class StartActivity extends BaseActivity {
 
@@ -26,6 +28,7 @@ public class StartActivity extends BaseActivity {
     @Inject
     FliBeaconApplication fliBeaconApplication;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,15 +39,12 @@ public class StartActivity extends BaseActivity {
         registerAndStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SocketIO socket = fliBeaconApplication.getSocket();
+                Ready ready = new Ready();
+                ready.setClientType("baseStation");
+                socket.emit("ready", new Gson().toJson(ready));
 
-                fliBeaconApplication.getSocket().on(Socket.EVENT_CONNECT, new Emitter.Listener() {
-                    @Override
-                    public void call(Object... args) {
-                        Log.d(TAG, "connected to socket.io");
-                    }
-                });
-                fliBeaconApplication.getSocket().connect();
-
+                startActivity(new Intent(StartActivity.this, MainActivity.class));
             }
         });
     }

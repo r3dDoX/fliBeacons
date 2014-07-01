@@ -9,6 +9,7 @@ import javax.inject.Singleton;
 
 import ch.fork.flibeacons.activities.MainActivity;
 import ch.fork.flibeacons.activities.SettingsActivity;
+import ch.fork.flibeacons.activities.StartActivity;
 import dagger.Module;
 import dagger.Provides;
 
