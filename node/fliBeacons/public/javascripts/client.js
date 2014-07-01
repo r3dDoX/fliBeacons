@@ -1,10 +1,11 @@
 (function (global) {
 	
-	var log = document.querySelector("#log"),
-		stations = document.querySelector("#stations"),
-		tabs = document.querySelector('paper-tabs'),
-		monitor = document.querySelector(".container"),
-		game = document.querySelector("#game-container"),
+	var q = document.querySelector.bind(document),
+		log = q("#log"),
+		stations = q("#stations"),
+		tabs = q('paper-tabs'),
+		monitor = q(".container"),
+		game = q("#game-container"),
 		socket = io.connect(),
 		stationCreatedCount = 0,
         listeners = []; 
@@ -23,6 +24,7 @@
 	};
 		
 	socket.on("drone", function (drone) {
+		console.log(drone);
 		global.messageBus.fire("drone", drone);
 	});
 	socket.on("baseStations", function (stations) {
@@ -60,52 +62,31 @@
 	
 	
 	// prototyping
-	document.querySelector("#drone-near").addEventListener("click", function () {
+	document.querySelector("#drone-dialog").addEventListener("click", function () {
+		document.querySelector("#drone").toggle();
+	}, false);
+	
+	document.querySelector("#send-drone").addEventListener("click", function () {
+		console.log(q("#type [checked]").getAttribute("name"));
 		socket.emit("drone", {
-			type: "moved",
-			proximity: "near",
-			baseStationId: global.activatedStation || "station-1",
-			distance: 2,
+			type: q("#type [checked]").getAttribute("name"),
+			proximity: q("#proximity [checked]").getAttribute("name"),
+			baseStationId: q("#baseStationId").value,
+			distance: q("#distance").value,
 			beacon: {
-				uuid: "dead-deaddead-dead",
-				major: 2,
-				minor: 3
+				uuid: q("#beaconUuid").value,
+				major: q("#beaconMajor").value,
+				minor: q("#beaconMinor").value
 			}
 		});
-	}, false);
-	document.querySelector("#drone-immediate").addEventListener("click", function () {
-		socket.emit("drone", {
-			type: "removed",
-			proximity: "immediate",
-			baseStationId: "station-1",
-			distance: 2,
-			beacon: {
-				uuid: "dead-deaddead-dead",
-				major: 2,
-				minor: 3
-			}
-		});
-	}, false);
-	document.querySelector("#drone-far").addEventListener("click", function () {
-		socket.emit("drone", {
-			type: "entered",
-			proximity: "far",
-			baseStationId: "station-1",
-			distance: 2,
-			beacon: {
-				uuid: "dead-deaddead-dead",
-				major: 2,
-				minor: 3
-			}
-		});
-	}, false);
+	});
 	
 	document.querySelector("#station").addEventListener("click", function () {
 		stationCreatedCount++;
 		socket.emit("baseStation", {
 			id: "id-" + stationCreatedCount,
-			name: "Station " + stationCreatedCount,
-			id: "station-" + stationCreatedCount,
+			name: "Station-" + stationCreatedCount,
+			id: "Station-" + stationCreatedCount,
 			lat: 32.333232,
 			lng: 13.31210
 		});
