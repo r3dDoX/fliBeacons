@@ -1,22 +1,44 @@
-var sockets = {},
+var clients = [],
+    clientRoom = 'clients',
+    monitorRoom = 'monitors',
+    
+    sendMonitorsUpdatedBaseStations = function(req) {
+        req.io.manager.sockets.in(monitorRoom).emit('baseStationChange', clients);
+    },
+    
     ready = function(req) {
-        sockets[req.socket.id] = {};
+        var data = req.data || {};
+        
+        switch (data.clientType) {
+            case 'monitor':
+                req.socket.join(monitorRoom);
+                break;
+            case 'baseStation':
+                clients.push({ id: req.socket.id });
+                req.socket.join(clientRoom);
+                sendMonitorsUpdatedBaseStations(req);
+                break;
+        }
     }, 
     
     disconnect = function(req) {
-        delete sockets[req.socket.id];
+        var removeId = function(element) {
+            return element.id !== req.socket.id;
+        };
+        
+        clients = clients.filter(removeId);
     },
     
     drone = function(req) {
         var data = req.data;
         
         if (data) {
-            req.io.manager.sockets.emit('drone', data);
+            req.socket.broadcast.emit('drone', data);
         }
     },
     
     baseStation = function(req) {
-        sockets[req.socket.id].baseStation = req.data;
+        clients[req.socket.id].baseStation = req.data;
     };
 
 exports.handlers = {
