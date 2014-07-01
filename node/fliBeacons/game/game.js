@@ -23,6 +23,10 @@ var drones = [{uuid: 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', major: '51881', min
         return ['Game started'];
     },
     
+    addToHistory = function(text) {
+        gameState.history.push(text);
+    },
+    
     initGameState = function() {
         gameState = {};
         gameState.isRunning = true;
@@ -55,8 +59,10 @@ var drones = [{uuid: 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', major: '51881', min
     moveOn = function(req, drone) {
         var sockets = req.io.manager.sockets;
         updateRanking(drone);
+        addToHistory('Drone ' + drone.beacon.uuid + ' got Station ' + baseStations[activeStation].id);
         
         if (activeStation === baseStations.length -1) {
+            addToHistory('Game finished');
             sockets.emit(finishedEvent, gameState);
         } else {
             sockets.emit(activateEvent, baseStations[++activeStation]);
@@ -65,7 +71,8 @@ var drones = [{uuid: 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', major: '51881', min
     },
     
     checkGameState = function(req, drone) {
-        if (drone.baseStationId === baseStations[activeStation].id && drone.proximity === 'near') {
+        if (drone.baseStationId === baseStations[activeStation].id && 
+            drone.proximity === 'near' || drone.proximity === 'immediate') {
             moveOn(req, drone);
         }
     };
