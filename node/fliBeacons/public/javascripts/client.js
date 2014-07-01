@@ -5,45 +5,6 @@
 		tabs = document.querySelector('paper-tabs'),
 		monitor = document.querySelector(".container"),
 		game = document.querySelector("#game-container"),
-		createId = function (id) {
-			return "a" + id.replace(" ", "-");
-		},
-		addDrone = function (drone) {
-			var el = document.createElement("div"),
-				buf = "<label>Drone</label>",
-				id = createId(drone.id);
-				
-				
-			buf += "<pre>" + JSON.stringify(drone, null, 2) + "</pre>";
-			
-			el.innerHTML = buf;
-			el.classList.add("panel");
-			log.appendChild(el);
-			console.log(drone);
-			var stationEl = document.getElementById(createId(drone.id));
-			stationEl.addDrone(drone);
-			
-		},
-		updateBaseStations = function (baseStations) {
-			baseStations.forEach(function (station) {
-				var id = createId(station.id);
-				if (!document.querySelector("#" + id)) {	
-					var el = document.createElement("fli-base-station");
-					el.name = station.name;
-					el.lat= station.lat;
-					el.lng= station.lng;
-					el.setAttribute("id", id);
-					stations.appendChild(el);
-				}
-			});
-		},
-		removeBaseStation = function (baseStation) {
-			var id = createId(baseStation.id),
-				el = document.querySelector("#" + id);
-			if (el) {	
-				el.parentNode.removeChild(el);
-			}
-		},
 		socket = io.connect(),
 		stationCreatedCount = 0;
 		
@@ -60,34 +21,23 @@
 	};
 		
 	socket.on("drone", function (drone) {
-		addDrone(drone);
 		global.messageBus.fire("drone", drone);
 	});
-	
 	socket.on("baseStations", function (stations) {
-		updateBaseStations(stations);
 		global.messageBus.fire("baseStations", stations);
 	});
 	socket.on("baseStationAdded", function (station) {
-		updateBaseStations([station]);
 		global.messageBus.fire("baseStationAdded", station);
 	});
 	socket.on("baseStationRemoved", function (station) {
-		removeBaseStation(station);
 		global.messageBus.fire("baseStationRemoved", station);
-	});
-	
-	global.messageBus.register(function (event, data) {
-		console.log("bus", event, data);
 	});
 		
 	socket.emit('ready', {
 		clientType: "monitor"
 	});
-	
 
 	tabs.addEventListener('core-select', function() {
-		console.log(tabs.selected);
 		if (tabs.selected === 'monitor') {
 			monitor.style.display = "block";
 			game.style.display = "none";
@@ -103,6 +53,7 @@
 		socket.emit("drone", {
 			type: "entered",
 			proximity: "near",
+			baseStationId: "id-1",
 			distance: 2,
 			beacon: {
 				uuid: "dead-deaddead-dead",
@@ -115,6 +66,7 @@
 		socket.emit("drone", {
 			type: "entered",
 			proximity: "immediate",
+			baseStationId: "id-1",
 			distance: 2,
 			beacon: {
 				uuid: "dead-deaddead-dead",
@@ -127,6 +79,7 @@
 		socket.emit("drone", {
 			type: "entered",
 			proximity: "far",
+			baseStationId: "id-1",
 			distance: 2,
 			beacon: {
 				uuid: "dead-deaddead-dead",
@@ -139,6 +92,7 @@
 	document.querySelector("#station").addEventListener("click", function () {
 		stationCreatedCount++;
 		socket.emit("baseStation", {
+			id: "id-" + stationCreatedCount,
 			name: "Station " + stationCreatedCount,
 			id: "station-" + stationCreatedCount,
 			lat: 32.333232,
