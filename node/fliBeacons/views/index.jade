@@ -4,8 +4,8 @@ block content
 	core-header-panel
 		core-toolbar
 			paper-tabs(selected="all", valueattr="name", self-end)
-				paper-tab(name="all") Drones
-				paper-tab(name="favorites") Stations
+				paper-tab(name="monitor") Monitor
+				paper-tab(name="game") Game
 		.container(center)
 			.tools
 				paper-button#drone-near Drone 'near
@@ -14,6 +14,10 @@ block content
 				paper-button#station Send station event
 			#stations
 			#log
+		#game-container(style="display: none")
+			#stations
+			#map
+			#ranking
 
 	
 	script(src="/socket.io/socket.io.js")
