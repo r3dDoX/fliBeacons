@@ -6,9 +6,11 @@
 		monitor = document.querySelector(".container"),
 		game = document.querySelector("#game-container"),
 		socket = io.connect(),
-		stationCreatedCount = 0;
-		
-	var listeners = []; 
+		stationCreatedCount = 0,
+        listeners = []; 
+    
+    global.socket = socket;
+    
 	global.messageBus = {
 		register: function (listener) {
 			listeners.push(listener);
