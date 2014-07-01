@@ -7,7 +7,12 @@ block content
 				paper-tab(name="all") Drones
 				paper-tab(name="favorites") Stations
 		.container(center)
-			paper-button#drone Send drone event
+			.tools
+				paper-button#drone-near Drone 'near
+				paper-button#drone-far Drone 'far'
+				paper-button#drone-immediate Drone 'immediate'
+				paper-button#station Send station event
+			#stations
 			#log
 
 	
