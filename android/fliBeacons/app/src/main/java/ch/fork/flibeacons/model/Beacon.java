@@ -3,7 +3,6 @@ package ch.fork.flibeacons.model;
 import com.google.gson.Gson;
 
 import java.util.UUID;
-
 /**
  * Created by lufr on 30.06.2014.
  */

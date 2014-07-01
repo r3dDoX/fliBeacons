@@ -42,17 +42,16 @@ public class MainActivity extends BaseActivity {
     Button stopRangingButton;
     @Inject
     FliBeaconApplication fliBeaconApplication;
+
     private FliBeaconService fliBeaconService;
+
     private boolean bound;
-    /**
-     * Defines callbacks for service binding, passed to bindService()
-     */
+
     private ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
             FliBeaconService.FliBeaconBinder binder = (FliBeaconService.FliBeaconBinder) service;
             fliBeaconService = binder.getService();
             bound = true;
@@ -138,6 +137,7 @@ public class MainActivity extends BaseActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);
