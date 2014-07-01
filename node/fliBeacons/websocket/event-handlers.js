@@ -11,7 +11,7 @@ var baseStations = [],
     removeBaseStationOnDisconnect = function(req) {
         var updated = false,
             removeBaseStation = function(element) {
-                if (element.id !== req.socket.id) {
+                if (req.socket && element.id !== req.socket.id) {
                     updated = true;
                     return updated;
                 }
