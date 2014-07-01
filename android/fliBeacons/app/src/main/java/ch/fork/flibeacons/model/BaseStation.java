@@ -5,6 +5,7 @@ package ch.fork.flibeacons.model;
  */
 public class BaseStation {
 
+    private String id;
     private String name;
     private double lat;
     private double lng;
@@ -36,5 +37,13 @@ public class BaseStation {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

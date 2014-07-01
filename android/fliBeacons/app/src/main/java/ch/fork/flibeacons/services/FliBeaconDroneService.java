@@ -2,8 +2,10 @@ package ch.fork.flibeacons.services;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.radiusnetworks.ibeacon.IBeacon;
@@ -12,10 +14,12 @@ import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
 import ch.fork.flibeacons.FliBeaconApplication;
+import ch.fork.flibeacons.activities.SettingsActivity;
 import ch.fork.flibeacons.events.RangeEvent;
 import ch.fork.flibeacons.model.Beacon;
 import ch.fork.flibeacons.model.Drone;
@@ -31,6 +35,7 @@ public class FliBeaconDroneService extends Service {
     @Inject
     Bus bus;
     private DroneStore droneStore = new DroneStore();
+    private String baseStationUUID;
 
     public FliBeaconDroneService() {
     }
@@ -41,6 +46,8 @@ public class FliBeaconDroneService extends Service {
         FliBeaconApplication fliBeaconApplication = (FliBeaconApplication) getApplication();
         fliBeaconApplication.inject(this);
         bus.register(this);
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        baseStationUUID = defaultSharedPreferences.getString(SettingsActivity.KEY_BASESTATION_UUID, UUID.randomUUID().toString());
     }
 
     @Override
@@ -86,7 +93,7 @@ public class FliBeaconDroneService extends Service {
             }
 
             Beacon beacon = new Beacon(iBeacon.getProximityUuid(), iBeacon.getMajor(), iBeacon.getMinor());
-            Drone drone = new Drone(type, getProximity(iBeacon.getProximity()), iBeacon.getAccuracy(), beacon);
+            Drone drone = new Drone(type, getProximity(iBeacon.getProximity()), iBeacon.getAccuracy(), beacon, baseStationUUID);
             currentDrones.add(drone);
         }
 

@@ -53,6 +53,10 @@ public class FliBeaconLocationService extends Service implements LocationListene
         return sharedPref.getString(SettingsActivity.KEY_BASESTATION_NAME, UUID.randomUUID().toString());
     }
 
+    private String getBaseStationUUIDFromSettings() {
+        return sharedPref.getString(SettingsActivity.KEY_BASESTATION_UUID, UUID.randomUUID().toString());
+    }
+
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
@@ -68,9 +72,12 @@ public class FliBeaconLocationService extends Service implements LocationListene
         BaseStation baseStation = new BaseStation();
 
         String baseStationNameFromSettings = getBaseStationNameFromSettings();
+        String baseStationUUID = getBaseStationUUIDFromSettings();
+        baseStation.setId(baseStationUUID);
         baseStation.setName(baseStationNameFromSettings);
         baseStation.setLat(location.getLatitude());
         baseStation.setLng(location.getLongitude());
+
 
         fliBeaconApplication.getSocket().emit("baseStation", gson.toJson(baseStation));
     }

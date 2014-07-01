@@ -5,8 +5,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.gson.JsonElement;
@@ -15,9 +17,11 @@ import com.squareup.otto.Bus;
 import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import javax.inject.Inject;
 
+import ch.fork.flibeacons.activities.SettingsActivity;
 import ch.fork.flibeacons.events.ServerEvent;
 import ch.fork.flibeacons.services.FliBeaconDroneService;
 import ch.fork.flibeacons.services.FliBeaconLocationService;
@@ -109,6 +113,11 @@ public class FliBeaconApplication extends Application implements IOCallback {
 
         Intent intentDroneService = new Intent(this, FliBeaconDroneService.class);
         bindService(intentDroneService, droneServiceConnection, Context.BIND_AUTO_CREATE);
+
+        String baseStationUUID = UUID.randomUUID().toString();
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPref.edit().putString(SettingsActivity.KEY_BASESTATION_UUID, baseStationUUID).commit();
 
         try {
             socket = new SocketIO("http://flibeacons1.ngrok.com/");
