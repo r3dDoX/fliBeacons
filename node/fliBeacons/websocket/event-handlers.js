@@ -39,6 +39,7 @@ var baseStations = [],
         var data = req.data;
         
         if (data) {
+            data.id = req.socket.id;
             req.socket.broadcast.emit(droneEvent, data);
         }
     },
