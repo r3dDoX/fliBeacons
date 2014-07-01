@@ -32,6 +32,12 @@
 	socket.on("baseStationRemoved", function (station) {
 		global.messageBus.fire("baseStationRemoved", station);
 	});
+	socket.on("updated", function (gameState) {
+		global.messageBus.fire("updated", gameState);
+	});
+	socket.on("finished", function (gameState) {
+		global.messageBus.fire("finished", gameState);
+	});
 		
 	socket.emit('ready', {
 		clientType: "monitor"
