@@ -1,4 +1,4 @@
-package ch.fork.flibeacons;
+package ch.fork.flibeacons.services;
 
 import android.app.Service;
 import android.content.Intent;
@@ -15,6 +15,7 @@ import java.util.Collection;
 
 import javax.inject.Inject;
 
+import ch.fork.flibeacons.FliBeaconApplication;
 import ch.fork.flibeacons.events.RangeEvent;
 import ch.fork.flibeacons.model.Beacon;
 import ch.fork.flibeacons.model.Drone;
@@ -25,11 +26,11 @@ public class FliBeaconDroneService extends Service {
 
     // Binder given to clients
     private final IBinder mBinder = new FliBeaconBinder();
-    private DroneStore droneStore = new DroneStore();
     @Inject
     FliBeaconApplication fliBeaconApplication;
     @Inject
     Bus bus;
+    private DroneStore droneStore = new DroneStore();
 
     public FliBeaconDroneService() {
     }
@@ -43,7 +44,7 @@ public class FliBeaconDroneService extends Service {
     }
 
     @Override
-    public void onDestroy(){
+    public void onDestroy() {
         super.onDestroy();
         bus.unregister(this);
     }
@@ -58,13 +59,13 @@ public class FliBeaconDroneService extends Service {
         final Collection<IBeacon> iBeacons = event.getBeacons();
 
         final Collection<Drone> currentDrones = getCurrentDrones(iBeacons);
-        for(Drone drone : currentDrones){
+        for (Drone drone : currentDrones) {
             fliBeaconApplication.getSocket().emit("drone", drone.toJSON());
             Log.d(TAG, "Drone in range: " + drone.toJSON());
         }
 
         final Collection<Drone> leftDrones = getLeftDrones(currentDrones);
-        for(Drone drone : leftDrones){
+        for (Drone drone : leftDrones) {
             fliBeaconApplication.getSocket().emit("drone", drone.toJSON());
             Log.d(TAG, "Drone out of range: " + drone.toJSON());
         }
@@ -72,15 +73,15 @@ public class FliBeaconDroneService extends Service {
         droneStore.setNewDrones(currentDrones);
     }
 
-    private Collection<Drone> getCurrentDrones(Collection<IBeacon> iBeacons){
+    private Collection<Drone> getCurrentDrones(Collection<IBeacon> iBeacons) {
         Collection<Drone> currentDrones = new ArrayList<Drone>();
-        for(IBeacon iBeacon : iBeacons){
+        for (IBeacon iBeacon : iBeacons) {
             final String uuid = iBeacon.getProximityUuid();
             Drone.Type type;
 
-            if(droneStore.getDrones().containsKey(uuid)){
+            if (droneStore.getDrones().containsKey(uuid)) {
                 type = Drone.Type.moved;
-            }else{
+            } else {
                 type = Drone.Type.entered;
             }
 
@@ -92,9 +93,9 @@ public class FliBeaconDroneService extends Service {
         return currentDrones;
     }
 
-    private Collection<Drone> getLeftDrones(Collection<Drone> currentDrones){
+    private Collection<Drone> getLeftDrones(Collection<Drone> currentDrones) {
         Collection<Drone> leftDrones = droneStore.getLeftDrones(currentDrones);
-        for(Drone leftDrone : leftDrones){
+        for (Drone leftDrone : leftDrones) {
             leftDrone.setType(Drone.Type.left);
         }
 

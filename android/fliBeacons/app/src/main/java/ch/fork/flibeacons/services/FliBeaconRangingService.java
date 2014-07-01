@@ -1,4 +1,4 @@
-package ch.fork.flibeacons;
+package ch.fork.flibeacons.services;
 
 import android.app.Service;
 import android.content.Intent;
@@ -19,10 +19,11 @@ import java.util.Collection;
 
 import javax.inject.Inject;
 
+import ch.fork.flibeacons.FliBeaconApplication;
 import ch.fork.flibeacons.events.RangeEvent;
 
-public class FliBeaconService extends Service implements IBeaconConsumer {
-    protected static final String TAG = FliBeaconService.class.getSimpleName();
+public class FliBeaconRangingService extends Service implements IBeaconConsumer {
+    protected static final String TAG = FliBeaconRangingService.class.getSimpleName();
 
     // Binder given to clients
     private final IBinder mBinder = new FliBeaconBinder();
@@ -33,7 +34,7 @@ public class FliBeaconService extends Service implements IBeaconConsumer {
     Bus bus;
     private IBeaconManager iBeaconManager = IBeaconManager.getInstanceForApplication(this);
 
-    public FliBeaconService() {
+    public FliBeaconRangingService() {
         region = new Region("myRangingUniqueId", null, null, null);
     }
 
@@ -105,8 +106,8 @@ public class FliBeaconService extends Service implements IBeaconConsumer {
     }
 
     public class FliBeaconBinder extends Binder {
-        public FliBeaconService getService() {
-            return FliBeaconService.this;
+        public FliBeaconRangingService getService() {
+            return FliBeaconRangingService.this;
         }
     }
 }

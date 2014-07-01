@@ -21,9 +21,9 @@ import ch.fork.flibeacons.FliBeaconApplication;
 import ch.fork.flibeacons.activities.SettingsActivity;
 import ch.fork.flibeacons.model.BaseStation;
 
-public class FliLocationService extends Service implements LocationListener {
+public class FliBeaconLocationService extends Service implements LocationListener {
 
-    private static final String TAG = FliLocationService.class.getSimpleName();
+    private static final String TAG = FliBeaconLocationService.class.getSimpleName();
     // Binder given to clients
     private final IBinder mBinder = new FliLocationBinder();
     private LocationManager locationManager;
@@ -31,7 +31,7 @@ public class FliLocationService extends Service implements LocationListener {
     private Gson gson;
     private SharedPreferences sharedPref;
 
-    public FliLocationService() {
+    public FliBeaconLocationService() {
     }
 
     @Override
@@ -104,8 +104,8 @@ public class FliLocationService extends Service implements LocationListener {
     }
 
     public class FliLocationBinder extends Binder {
-        public FliLocationService getService() {
-            return FliLocationService.this;
+        public FliBeaconLocationService getService() {
+            return FliBeaconLocationService.this;
         }
     }
 }
