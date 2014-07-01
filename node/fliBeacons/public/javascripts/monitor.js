@@ -6,7 +6,7 @@
 		addDrone = function (drone) {
 			var el = document.createElement("div"),
 				buf = "<label>Drone</label>",
-				id = createId(drone.id);
+				id = createId(drone.baseStationId);
 				
 				
 			buf += "<pre>" + JSON.stringify(drone, null, 2) + "</pre>";
@@ -15,7 +15,7 @@
 			el.classList.add("panel");
 			log.appendChild(el);
 			console.log(drone);
-			var stationEl = document.getElementById(createId(drone.id));
+			var stationEl = document.getElementById(id);
 			stationEl.addDrone(drone);
 			
 		},
