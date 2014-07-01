@@ -1,6 +1,6 @@
 (function (global) {
 	
-	var q = q.bind(document),
+	var q = document.querySelector.bind(document),
 		log = q("#log"),
 		stations = q("#stations"),
 		tabs = q('paper-tabs'),
