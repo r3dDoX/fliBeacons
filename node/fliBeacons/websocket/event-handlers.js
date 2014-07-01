@@ -17,6 +17,11 @@ var baseStations = [],
         });
     },
     
+    enrichWithSocketId = function(req, data) {
+        data.id = req.socket.id;
+        return data;
+    },
+    
     ready = function(req) {
         var data = req.data || {};
         
@@ -39,14 +44,14 @@ var baseStations = [],
         var data = req.data;
         
         if (data) {
-            data.id = req.socket.id;
+            data = enrichWithSocketId(req, data);
             req.socket.broadcast.emit(droneEvent, data);
         }
     },
     
     baseStation = function(req) {
         var baseStation = req.data || {};
-        baseStation.id = req.socket.id;
+        baseStation = enrichWithSocketId(req, baseStation);
         
         baseStations.push(baseStation);
         req.io.manager.sockets.in(monitorRoom).emit(baseStationAddedEvent, baseStation);
