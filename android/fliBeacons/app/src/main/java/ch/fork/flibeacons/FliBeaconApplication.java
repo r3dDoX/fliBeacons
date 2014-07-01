@@ -29,7 +29,9 @@ public class FliBeaconApplication extends Application {
     @Inject
     Bus bus;
     private FliBeaconService fliBeaconService;
-
+    private FliBeaconDroneService fliBeaconDroneService;
+    private boolean boundDroneService;
+    /** Defines callbacks for service binding, passed to bindService() */
     private FliLocationService fliLocationService;
 
     private ObjectGraph objectGraph;
@@ -67,6 +69,24 @@ public class FliBeaconApplication extends Application {
     };
     private Socket socket;
 
+    /** Defines callbacks for service binding, passed to bindService() */
+    private ServiceConnection droneServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            FliBeaconDroneService.FliBeaconBinder binder = (FliBeaconDroneService.FliBeaconBinder) service;
+            fliBeaconDroneService = binder.getService();
+            boundDroneService = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            boundDroneService = false;
+        }
+    };
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -79,11 +99,16 @@ public class FliBeaconApplication extends Application {
         Intent locationIntent = new Intent(this, FliLocationService.class);
         bindService(locationIntent, locationServiceConnection, Context.BIND_AUTO_CREATE);
 
+        Intent intentDroneService = new Intent(this, FliBeaconDroneService.class);
+        bindService(intentDroneService, droneServiceConnection, Context.BIND_AUTO_CREATE);
 
         try {
             socket = IO.socket("http://flibeacons1.ngrok.com");
         } catch (URISyntaxException e) {
         }
+
+
+        //startService(new Intent(this, FliBeaconService.class));
 
     }
 
@@ -94,6 +119,10 @@ public class FliBeaconApplication extends Application {
         if (bound) {
             unbindService(beaconServiceConnection);
             bound = false;
+        }
+        if (boundDroneService) {
+            unbindService(droneServiceConnection);
+            boundDroneService = false;
         }
     }
 

@@ -1,17 +1,21 @@
 package ch.fork.flibeacons.model;
 
+import com.google.gson.Gson;
+
 import org.json.JSONObject;
+
+import ch.fork.flibeacons.activities.MainActivity;
 
 /**
  * Created by lufr on 30.06.2014.
  */
 public class Drone {
 
-    private enum Type{
+    public enum Type{
         entered, left, moved
     }
 
-    private enum Proximity{
+    public enum Proximity{
         near, far, immediate
     }
 
@@ -19,6 +23,13 @@ public class Drone {
     private Proximity proximity;
     private double distance;
     private Beacon beacon;
+
+    public Drone(Type type, Proximity proximity, double distance, Beacon beacon){
+        this.type = type;
+        this.proximity = proximity;
+        this.distance = distance;
+        this.beacon = beacon;
+    }
 
     public Type getType() {
         return type;
@@ -50,5 +61,26 @@ public class Drone {
 
     public void setBeacon(Beacon beacon) {
         this.beacon = beacon;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Drone drone = (Drone) o;
+
+        if (!beacon.getUuid().equals(drone.beacon.getUuid())) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return beacon.getUuid().hashCode();
+    }
+
+    public String toJSON(){
+        return new Gson().toJson(this);
     }
 }
