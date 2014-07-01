@@ -40,8 +40,8 @@
 	socket.on("finished", function (gameState) {
 		global.messageBus.fire("finished", gameState);
 	});
-	socket.on("activated", function (baseStation) {
-		global.messageBus.fire("activated", baseStation);
+	socket.on("activate", function (baseStation) {
+		global.messageBus.fire("activate", baseStation);
 	});
 		
 	socket.emit('ready', {
@@ -64,7 +64,7 @@
 		socket.emit("drone", {
 			type: "entered",
 			proximity: "near",
-			baseStationId: "station-1",
+			baseStationId: global.activatedStation || "station-1",
 			distance: 2,
 			beacon: {
 				uuid: "dead-deaddead-dead",
