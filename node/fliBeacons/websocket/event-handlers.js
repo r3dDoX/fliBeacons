@@ -2,28 +2,19 @@ var baseStations = [],
     baseStationRoom = 'baseStations',
     monitorRoom = 'monitors',
     droneEvent = 'drone',
-    baseStationUpdateEvent = 'baseStationUpdate',
-    
-    sendUpdatedBaseStations = function(sockets) {
-        sockets.emit(baseStationUpdateEvent, baseStations);
-    },
+    baseStationsEvent = 'baseStations',
+    baseStationRemovedEvent = 'baseStationRemoved',
+    baseStationAddedEvent = 'baseStationAdded',
     
     removeBaseStationOnDisconnect = function(req) {
-        var updated = false,
-            removeBaseStation = function(element) {
-                if (req.socket && element.id !== req.socket.id) {
-                    updated = true;
-                    return updated;
-                }
-
+        baseStations = baseStations.filter(function(element) {
+            if (req.socket && element.id === req.socket.id) {
+                req.io.manager.sockets.in(monitorRoom).emit(baseStationRemovedEvent, element);
                 return false;
-            };
-        
-        baseStations = baseStations.filter(removeBaseStation);
-        
-        if(updated) {
-            sendUpdatedBaseStations(req.io.manager.sockets.in(monitorRoom));
-        }
+            }
+
+            return true;
+        });
     },
     
     ready = function(req) {
@@ -32,7 +23,7 @@ var baseStations = [],
         switch (data.clientType) {
             case 'monitor':
                 req.socket.join(monitorRoom);
-                sendUpdatedBaseStations(req.socket);
+                req.socket.emit(baseStationsEvent, baseStations);
                 break;
             case 'baseStation':
                 req.socket.join(baseStationRoom);
@@ -57,7 +48,7 @@ var baseStations = [],
         baseStation.id = req.socket.id;
         
         baseStations.push(baseStation);
-        sendUpdatedBaseStations(req.io.manager.sockets.in(monitorRoom));
+        req.io.manager.sockets.in(monitorRoom).emit(baseStationAddedEvent, baseStation);
     };
 
 exports.handlers = {
