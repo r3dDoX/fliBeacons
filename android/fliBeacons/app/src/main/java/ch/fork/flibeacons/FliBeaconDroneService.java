@@ -56,10 +56,20 @@ public class FliBeaconDroneService extends Service {
     @Subscribe
     public void onRange(RangeEvent event) {
         final Collection<IBeacon> iBeacons = event.getBeacons();
+
         final Collection<Drone> currentDrones = getCurrentDrones(iBeacons);
+        for(Drone drone : currentDrones){
+            fliBeaconApplication.getSocket().send(drone.toJSON());
+            Log.d(TAG, "Drone in range: " + drone.toJSON());
+        }
+        
         final Collection<Drone> leftDrones = getLeftDrones(currentDrones);
+        for(Drone drone : leftDrones){
+            fliBeaconApplication.getSocket().send(drone.toJSON());
+            Log.d(TAG, "Drone out of range: " + drone.toJSON());
+        }
+
         droneStore.setNewDrones(currentDrones);
-        //SEND DRONES TO SERVER
     }
 
     private Collection<Drone> getCurrentDrones(Collection<IBeacon> iBeacons){
@@ -77,8 +87,6 @@ public class FliBeaconDroneService extends Service {
             Beacon beacon = new Beacon(iBeacon.getProximityUuid(), iBeacon.getMajor(), iBeacon.getMinor());
             Drone drone = new Drone(type, getProximity(iBeacon.getProximity()), iBeacon.getAccuracy(), beacon);
             currentDrones.add(drone);
-
-            Log.d(TAG, "Drone in range: " + drone.toJSON());
         }
 
         return currentDrones;
@@ -88,7 +96,6 @@ public class FliBeaconDroneService extends Service {
         Collection<Drone> leftDrones = droneStore.getLeftDrones(currentDrones);
         for(Drone leftDrone : leftDrones){
             leftDrone.setType(Drone.Type.left);
-            Log.d(TAG, "Drone out of range: " + leftDrone.toJSON());
         }
 
         return leftDrones;
