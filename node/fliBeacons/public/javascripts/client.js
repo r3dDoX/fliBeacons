@@ -53,7 +53,7 @@
 		socket.emit("drone", {
 			type: "entered",
 			proximity: "near",
-			baseStationId: "id-1",
+			baseStationId: "station-1",
 			distance: 2,
 			beacon: {
 				uuid: "dead-deaddead-dead",
@@ -66,7 +66,7 @@
 		socket.emit("drone", {
 			type: "entered",
 			proximity: "immediate",
-			baseStationId: "id-1",
+			baseStationId: "station-1",
 			distance: 2,
 			beacon: {
 				uuid: "dead-deaddead-dead",
@@ -79,7 +79,7 @@
 		socket.emit("drone", {
 			type: "entered",
 			proximity: "far",
-			baseStationId: "id-1",
+			baseStationId: "station-1",
 			distance: 2,
 			beacon: {
 				uuid: "dead-deaddead-dead",
