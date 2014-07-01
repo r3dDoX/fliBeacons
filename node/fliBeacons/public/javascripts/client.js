@@ -4,7 +4,9 @@
 		stations = document.querySelector("#stations"),
 		addDrone = function (drone) {
 			var el = document.createElement("div"),
-				buf = "<label>Drone</label>";
+				buf = "<label>Drone</label>",
+				id = station.id.replace(" ", "-");
+				
 				
 			buf += "<pre>" + JSON.stringify(drone, null, 2) + "</pre>";
 			
@@ -12,13 +14,13 @@
 			el.classList.add("panel");
 			log.appendChild(el);
 			console.log(drone);
-			var stationEl = document.getElementById(drone.stationUuid);
+			var stationEl = document.getElementById(drone.id);
 			stationEl.addDrone(drone);
 			
 		},
 		updateBaseStations = function (baseStations) {
 			baseStations.forEach(function (station) {
-				var id = station.name.replace(" ", "-");
+				var id = station.id.replace(" ", "-");
 				if (!document.querySelector("#" + id)) {	
 					var el = document.createElement("fli-base-station");
 					el.name = station.name;
