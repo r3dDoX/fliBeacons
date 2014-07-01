@@ -9,13 +9,19 @@ var baseStations = [],
     },
     
     removeBaseStationOnDisconnect = function(req) {
-        var length = baseStations.length;
+        var updated = false,
+            removeBaseStation = function(element) {
+                if (element.id !== req.socket.id) {
+                    updated = true;
+                    return updated;
+                }
+
+                return false;
+            };
         
-        baseStations = baseStations.filter(function(element) {
-            return element.id !== req.socket.id;
-        });
+        baseStations = baseStations.filter(removeBaseStation);
         
-        if(length !== baseStations.length) {
+        if(updated) {
             sendUpdatedBaseStations(req.io.manager.sockets.in(monitorRoom));
         }
     },
