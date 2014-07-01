@@ -25,9 +25,11 @@ public class FliBeaconApplication extends Application {
     @Inject
     Bus bus;
     private FliBeaconService fliBeaconService;
+    private FliBeaconDroneService fliBeaconDroneService;
     private ObjectGraph objectGraph;
     private Handler handler;
     private boolean bound;
+    private boolean boundDroneService;
     /** Defines callbacks for service binding, passed to bindService() */
     private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -46,6 +48,24 @@ public class FliBeaconApplication extends Application {
         }
     };
 
+    /** Defines callbacks for service binding, passed to bindService() */
+    private ServiceConnection droneServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            FliBeaconDroneService.FliBeaconBinder binder = (FliBeaconDroneService.FliBeaconBinder) service;
+            fliBeaconDroneService = binder.getService();
+            boundDroneService = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            boundDroneService = false;
+        }
+    };
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -55,6 +75,9 @@ public class FliBeaconApplication extends Application {
 
         Intent intent = new Intent(this, FliBeaconService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+
+        Intent intentDroneService = new Intent(this, FliBeaconDroneService.class);
+        bindService(intentDroneService, droneServiceConnection, Context.BIND_AUTO_CREATE);
 
         //startService(new Intent(this, FliBeaconService.class));
     }
@@ -66,6 +89,10 @@ public class FliBeaconApplication extends Application {
         if (bound) {
             unbindService(mConnection);
             bound = false;
+        }
+        if (boundDroneService) {
+            unbindService(droneServiceConnection);
+            boundDroneService = false;
         }
     }
 

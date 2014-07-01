@@ -1,5 +1,7 @@
 package ch.fork.flibeacons.model;
 
+import com.google.gson.Gson;
+
 import java.util.UUID;
 
 /**
@@ -9,6 +11,12 @@ public class Beacon {
     private String uuid;
     private int major;
     private int minor;
+
+    public Beacon(String uuid, int major, int minor){
+        this.uuid = uuid;
+        this.major = major;
+        this.minor = minor;
+    }
 
     public String getUuid() {
         return uuid;
@@ -32,5 +40,9 @@ public class Beacon {
 
     public void setMinor(int minor) {
         this.minor = minor;
+    }
+
+    public String getJSON(){
+        return new Gson().toJson(this);
     }
 }
