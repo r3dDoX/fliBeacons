@@ -29,7 +29,7 @@ import io.socket.SocketIOException;
 /**
  * Created by fork on 30.06.14.
  */
-public class FliBeaconApplication extends Application {
+public class FliBeaconApplication extends Application implements IOCallback {
 
     private static final String TAG = FliBeaconApplication.class.getSimpleName();
     @Inject
@@ -110,48 +110,10 @@ public class FliBeaconApplication extends Application {
 
         try {
             socket = new SocketIO("http://flibeacons1.ngrok.com/");
-            socket.connect(new IOCallback() {
-
-                @Override
-                public void onDisconnect() {
-
-                }
-
-                @Override
-                public void onConnect() {
-                    Log.i(TAG, "connected");
-                }
-
-                @Override
-                public void onMessage(String data, IOAcknowledge ack) {
-
-                }
-
-                @Override
-                public void onMessage(JsonElement json, IOAcknowledge ack) {
-
-                }
-
-                @Override
-                public void on(String event, IOAcknowledge ack, JsonElement... args) {
-                    Log.i(TAG, "received event: " + event + " --> " + args);
-
-                    postEvent(new ServerEvent(event, args));
-                }
-
-                @Override
-                public void onError(SocketIOException socketIOException) {
-
-                }
-            });
-
+            socket.connect(this);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-
-
-        //startService(new Intent(this, FliBeaconService.class));
-
     }
 
     public SocketIO getSocket() {
@@ -198,4 +160,39 @@ public class FliBeaconApplication extends Application {
         });
     }
 
+    public FliLocationService getFliLocationService() {
+        return fliLocationService;
+    }
+
+    @Override
+    public void onDisconnect() {
+
+    }
+
+    @Override
+    public void onConnect() {
+        Log.i(TAG, "connected");
+    }
+
+    @Override
+    public void onMessage(String data, IOAcknowledge ack) {
+
+    }
+
+    @Override
+    public void onMessage(JsonElement json, IOAcknowledge ack) {
+
+    }
+
+    @Override
+    public void on(String event, IOAcknowledge ack, JsonElement... args) {
+        Log.i(TAG, "received event: " + event + " --> " + args);
+
+        postEvent(new ServerEvent(event, args));
+    }
+
+    @Override
+    public void onError(SocketIOException socketIOException) {
+
+    }
 }
