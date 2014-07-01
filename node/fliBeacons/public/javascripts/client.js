@@ -40,6 +40,9 @@
 	socket.on("finished", function (gameState) {
 		global.messageBus.fire("finished", gameState);
 	});
+	socket.on("activated", function (baseStation) {
+		global.messageBus.fire("activated", baseStation);
+	});
 		
 	socket.emit('ready', {
 		clientType: "monitor"
