@@ -1,4 +1,4 @@
-(function () {
+(function (global) {
 	
 	var log = document.querySelector("#log"),
 		stations = document.querySelector("#stations"),
@@ -47,24 +47,38 @@
 		socket = io.connect(),
 		stationCreatedCount = 0;
 		
-	
-	socket.on("ready", function (data) {
-	});
-	socket.on("close", function (data) {
-		console.log("receveived 'close' event", data);
-	});
-	socket.on("drone", function (data) {
-		addDrone(data);
+	var listeners = []; 
+	global.messageBus = {
+		register: function (listener) {
+			listeners.push(listener);
+		},
+		fire: function (event, data) {
+			listeners.forEach(function (listener) {
+				listener(event, data);
+			});
+		}
+	};
+		
+	socket.on("drone", function (drone) {
+		addDrone(drone);
+		global.messageBus.fire("drone", drone);
 	});
 	
 	socket.on("baseStations", function (stations) {
 		updateBaseStations(stations);
+		global.messageBus.fire("baseStations", stations);
 	});
 	socket.on("baseStationAdded", function (station) {
 		updateBaseStations([station]);
+		global.messageBus.fire("baseStationAdded", station);
 	});
 	socket.on("baseStationRemoved", function (station) {
 		removeBaseStation(station);
+		global.messageBus.fire("baseStationRemoved", station);
+	});
+	
+	global.messageBus.register(function (event, data) {
+		console.log("bus", event, data);
 	});
 		
 	socket.emit('ready', {
@@ -83,10 +97,11 @@
 		}
 	});
 	
+	
+	// prototyping
 	document.querySelector("#drone-near").addEventListener("click", function () {
 		socket.emit("drone", {
 			type: "entered",
-			stationUuid: "station-1",
 			proximity: "near",
 			distance: 2,
 			beacon: {
@@ -99,7 +114,6 @@
 	document.querySelector("#drone-immediate").addEventListener("click", function () {
 		socket.emit("drone", {
 			type: "entered",
-			stationUuid: "station-1",
 			proximity: "immediate",
 			distance: 2,
 			beacon: {
@@ -112,7 +126,6 @@
 	document.querySelector("#drone-far").addEventListener("click", function () {
 		socket.emit("drone", {
 			type: "entered",
-			stationUuid: "station-1",
 			proximity: "far",
 			distance: 2,
 			beacon: {
@@ -127,9 +140,9 @@
 		stationCreatedCount++;
 		socket.emit("baseStation", {
 			name: "Station " + stationCreatedCount,
-			uuid: "station-" + stationCreatedCount,
+			id: "station-" + stationCreatedCount,
 			lat: 32.333232,
 			lng: 13.31210
 		});
 	}, false);
-} ());
+} (this));
