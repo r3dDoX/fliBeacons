@@ -59,13 +59,13 @@ public class FliBeaconDroneService extends Service {
 
         final Collection<Drone> currentDrones = getCurrentDrones(iBeacons);
         for(Drone drone : currentDrones){
-            fliBeaconApplication.getSocket().send(drone.toJSON());
+            fliBeaconApplication.getSocket().emit("drone", drone.toJSON());
             Log.d(TAG, "Drone in range: " + drone.toJSON());
         }
-        
+
         final Collection<Drone> leftDrones = getLeftDrones(currentDrones);
         for(Drone drone : leftDrones){
-            fliBeaconApplication.getSocket().send(drone.toJSON());
+            fliBeaconApplication.getSocket().emit("drone", drone.toJSON());
             Log.d(TAG, "Drone out of range: " + drone.toJSON());
         }
 
