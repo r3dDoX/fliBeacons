@@ -3,16 +3,31 @@ var drones = [{uuid: 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', major: '51881', min
     activeStation = 0,
     gameState = {},
     activateEvent = 'activate',
+    finishedEvent = 'finished',
+    updateEvent = 'update',
     
     isRunning = function() {
         return gameState.isRunning;
     },
     
+    initRanking = function() {
+        return drones.map(function(element) {
+            return {
+                drone: element,
+                points: 0
+            };
+        });
+    },
+    
+    initHistory = function() {
+        return ['Game started'];
+    },
+    
     initGameState = function() {
         gameState = {};
         gameState.isRunning = true;
-        gameState.ranking = [];
-        gameState.history = [];
+        gameState.ranking = initRanking();
+        gameState.history = initHistory();
     },
     
     startCourse = function(req, baseStationOrder) {
@@ -25,9 +40,33 @@ var drones = [{uuid: 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', major: '51881', min
         }
     },
     
+    updateRanking = function(drone) {
+        gameState.ranking.map(function(element) {
+            if (element.drone.uuid === element.uuid) {
+                element.points += 1;
+            }
+            
+            return element;
+        }).sort(function(a, b) {
+            return a.points > b.points;
+        });
+    },
+    
+    moveOn = function(req, drone) {
+        var sockets = req.io.manager.sockets;
+        updateRanking(drone);
+        
+        if (activeStation === baseStations.length -1) {
+            sockets.emit(finishedEvent, gameState);
+        } else {
+            sockets.emit(activateEvent, baseStations[++activeStation]);
+            sockets.emit(updateEvent, gameState);
+        }
+    },
+    
     checkGameState = function(req, drone) {
-        if (drone.baseStationId === baseStations[activeStation].id && drone.proximity === 'immediate') {
-            req.io.manager.sockets.emit(activateEvent, baseStations[++activeStation]);
+        if (drone.baseStationId === baseStations[activeStation].id && drone.proximity === 'near') {
+            moveOn(req, drone);
         }
     };
 
