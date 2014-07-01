@@ -63,6 +63,7 @@ var drones = [{uuid: 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', major: '51881', min
         
         if (activeStation === baseStations.length -1) {
             addToHistory('Game finished');
+            gameState.isRunning = false;
             sockets.emit(finishedEvent, gameState);
         } else {
             sockets.emit(activateEvent, baseStations[++activeStation]);
