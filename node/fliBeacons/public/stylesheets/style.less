@@ -42,6 +42,17 @@ paper-tabs {
 	width: 320px;
 	
 }
+.clearfix:before,
+.clearfix:after {
+  content:"";
+  display:table;
+}
+.clearfix:after {
+  clear:both;
+}
+.clearfix {
+  zoom:1; /* For IE 6/7 (trigger hasLayout) */
+}
 
 @media (min-width: 481px) {
   paper-tabs {
