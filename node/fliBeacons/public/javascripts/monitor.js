@@ -14,7 +14,6 @@
 			el.innerHTML = buf;
 			el.classList.add("panel");
 			log.appendChild(el);
-			console.log(drone);
 			var stationEl = document.getElementById(id);
 			stationEl.addDrone(drone);
 			
