@@ -17,7 +17,6 @@ var baseStations = [],
                 sendUpdatedBaseStations(req.socket);
                 break;
             case 'baseStation':
-                baseStations.push({ id: req.socket.id });
                 req.socket.join(baseStationRoom);
                 break;
         }
@@ -40,7 +39,10 @@ var baseStations = [],
     },
     
     baseStation = function(req) {
-        baseStations[req.socket.id].baseStation = req.data;
+        var baseStation = req.data || {};
+        baseStation.id = req.socket.id;
+        
+        baseStations.push(baseStation);
         sendUpdatedBaseStations(req.io.manager.sockets.in(monitorRoom));
     };
 
