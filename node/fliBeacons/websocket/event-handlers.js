@@ -1,15 +1,15 @@
-var baseStations = [],
+var game = require('../game/game.js').game,
+    baseStations = [],
     baseStationRoom = 'baseStations',
     monitorRoom = 'monitors',
     droneEvent = 'drone',
     baseStationsEvent = 'baseStations',
     baseStationRemovedEvent = 'baseStationRemoved',
     baseStationAddedEvent = 'baseStationAdded',
-    courseEvent = 'course',
     
     removeBaseStationOnDisconnect = function(req) {
         baseStations = baseStations.filter(function(element) {
-            if (req.socket && element.id === req.socket.id) {
+            if (req.socket && element.socketId === req.socket.id) {
                 req.io.manager.sockets.in(monitorRoom).emit(baseStationRemovedEvent, element);
                 return false;
             }
@@ -19,7 +19,7 @@ var baseStations = [],
     },
     
     enrichWithSocketId = function(req, data) {
-        data.id = req.socket.id;
+        data.socketId = req.socket.id;
         return data;
     },
     
@@ -45,8 +45,11 @@ var baseStations = [],
         var data = req.data;
         
         if (data) {
-            data = enrichWithSocketId(req, data);
             req.socket.broadcast.emit(droneEvent, data);
+            
+            if(game.isRunning()) {
+                game.checkGameState(req, data);
+            }
         }
     },
     
@@ -68,7 +71,7 @@ var baseStations = [],
             return (Math.round(Math.random())-0.5);
         };
         
-        req.socket.emit(courseEvent, baseStations.sort(randomSorter));
+        game.startCourse(req, baseStations.sort(randomSorter));
         
     };
 
