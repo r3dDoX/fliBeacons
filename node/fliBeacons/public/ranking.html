@@ -6,6 +6,19 @@
 		:host {
 			border: solid 1px #ccc;
 		}
+            
+        #startGameButton {
+            background: #4285f4;
+            color: #fff;
+        }
+
+        #startGameButton:hover {
+            background: #2a56c6;
+        }
+
+        #startGameButton::shadow #ripple {
+            color: #2a56c6;
+        }
 		</style>
 		
         <h1>Ranking</h1>
@@ -21,9 +34,7 @@
             </tbody>
         </table>
         
-        <button id="startGameButton">
-            Start New Game!
-        </button>
+        <paper-button id="startGameButton" label="Start New Game!" raisedButton></paper-button>
     </template>
     
     <script>
@@ -53,7 +64,7 @@
         Polymer('fli-ranking', {
             ready: function () {
                 var shadowRoot = this.shadowRoot;
-                shadowRoot.querySelector('#startGameButton').addEventListener('click', function() { window.socket.emit('startCourse'); });
+                shadowRoot.querySelector('paper-button').addEventListener('click', function() { window.socket.emit('startCourse'); });
 
                 global.messageBus.register(function (event, data) {
                     if (event === 'updated' || event === 'finished') {
