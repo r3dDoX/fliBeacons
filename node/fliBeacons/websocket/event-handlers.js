@@ -36,7 +36,7 @@ var game = require('../game/game.js').game,
                 req.socket.join(baseStationRoom);
                 break;
         }
-    }, 
+    },
     
     disconnect = function(req) {
         removeBaseStationOnDisconnect(req.socket.id);
@@ -58,12 +58,11 @@ var game = require('../game/game.js').game,
         var baseStation = req.data || {},
             baseStationEvent = baseStationAddedEvent,
             alreadyAddedBaseStation = function(element) {
-                if (element.id !== baseStation.id) {
+                if (element.id === baseStation.id) {
                     baseStationEvent = baseStationUpdatedEvent;
-                    return true;
+                    return false;
                 }
-                
-                return false;
+                return true;
             };
         
         baseStation = enrichWithSocketId(req, baseStation);
