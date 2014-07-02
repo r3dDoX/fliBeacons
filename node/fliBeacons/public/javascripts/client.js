@@ -1,10 +1,11 @@
 (function (global) {
 	
-	var log = document.querySelector("#log"),
-		stations = document.querySelector("#stations"),
-		tabs = document.querySelector('paper-tabs'),
-		monitor = document.querySelector(".container"),
-		game = document.querySelector("#game-container"),
+	var q = document.querySelector.bind(document),
+		log = q("#log"),
+		stations = q("#stations"),
+		tabs = q('paper-tabs'),
+		monitor = q(".container"),
+		game = q("#game-container"),
 		socket = io.connect(),
 		stationCreatedCount = 0,
         listeners = []; 
@@ -23,6 +24,7 @@
 	};
 		
 	socket.on("drone", function (drone) {
+		console.log(drone);
 		global.messageBus.fire("drone", drone);
 	});
 	socket.on("baseStations", function (stations) {
@@ -40,6 +42,9 @@
 	socket.on("finished", function (gameState) {
 		global.messageBus.fire("finished", gameState);
 	});
+	socket.on("activate", function (baseStation) {
+		global.messageBus.fire("activate", baseStation);
+	});
 		
 	socket.emit('ready', {
 		clientType: "monitor"
@@ -52,62 +57,40 @@
 		} else {
 			monitor.style.display = "none";
 			game.style.display = "block";
-            global.messageBus.fire("mapSelected");
 		}
 	});
 	
 	
 	// prototyping
-	document.querySelector("#drone-near").addEventListener("click", function () {
-		socket.emit("drone", {
-			type: "entered",
-			proximity: "near",
-			baseStationId: "station-1",
-			distance: 2,
-			beacon: {
-				uuid: "dead-deaddead-dead",
-				major: 2,
-				minor: 3
-			}
-		});
-	}, false);
-	document.querySelector("#drone-immediate").addEventListener("click", function () {
-		socket.emit("drone", {
-			type: "entered",
-			proximity: "immediate",
-			baseStationId: "station-1",
-			distance: 2,
-			beacon: {
-				uuid: "dead-deaddead-dead",
-				major: 2,
-				minor: 3
-			}
-		});
-	}, false);
-	document.querySelector("#drone-far").addEventListener("click", function () {
-		socket.emit("drone", {
-			type: "entered",
-			proximity: "far",
-			baseStationId: "station-1",
-			distance: 2,
-			beacon: {
-				uuid: "dead-deaddead-dead",
-				major: 2,
-				minor: 3
-			}
-		});
+	q("#drone-dialog").addEventListener("click", function () {
+		q("#drone").toggle();
 	}, false);
 	
-	document.querySelector("#station").addEventListener("click", function () {
-		var max = 0.01,
+	q("#send-drone").addEventListener("click", function () {
+		console.log(q("#type [checked]").getAttribute("name"));
+		socket.emit("drone", {
+			type: q("#type [checked]").getAttribute("name"),
+			proximity: q("#proximity [checked]").getAttribute("name"),
+			baseStationId: q("#baseStationId").value,
+			distance: q("#distance").value,
+			beacon: {
+				uuid: q("#beaconUuid").value,
+				major: q("#beaconMajor").value,
+				minor: q("#beaconMinor").value
+			}
+		});
+	});
+	
+	q("#station").addEventListener("click", function () {
+        var max = 0.01,
             min = -0.01;
         stationCreatedCount++;
 		socket.emit("baseStation", {
 			id: "id-" + stationCreatedCount,
 			name: "Station " + stationCreatedCount,
-			id: "station-" + stationCreatedCount,
-			lat: 47.670162 + Math.random() * (max - min) + min,
-			lng: 8.95015 + Math.random() * (max - min) + min
-		});
+			id: "Station-" + stationCreatedCount,
+            lat: 47.670162 + Math.random() * (max - min) + min,
+            lng: 8.95015 + Math.random() * (max - min) + min
+        });
 	}, false);
 } (this));

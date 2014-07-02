@@ -27,18 +27,22 @@
     </template>
     
     <script>
+    var renderBodyRows = function(ranking, tbody) {
+            console.log(tbody);
+        };
+        
     Polymer('fli-ranking', {
 		ready: function () {
-            this.shadowRoot.querySelector('#startGameButton').addEventListener('click', window.socket.emit('startCourse'));;
-		},
-        
-        update: function(rankingArray) {
+            this.shadowRoot.querySelector('#startGameButton').addEventListener('click', function() { window.socket.emit('startCourse'); });
+            
             window.messageBus.register(function (event, data) {
                 if (event === 'updated' || event === 'finished') {
-                    
+                    renderBodyRows(data.ranking, this.shadowRoot.querySelector('table tbody'));
+                } else if (event === 'activate') {
+                    window.activatedStation = data.id;
                 }
             });
-        }
+		}
 	});
     </script>
 </polymer-element>

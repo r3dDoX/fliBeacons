@@ -8,10 +8,32 @@ block content
 				paper-tab(name="game") Game
 		.container(center)
 			.tools
-				paper-button#drone-near Drone 'near
-				paper-button#drone-far Drone 'far'
-				paper-button#drone-immediate Drone 'immediate'
-				paper-button#station Send station event
+				paper-button#station Register base station
+				paper-button#drone-dialog Show Drone dialog
+				paper-dialog#drone(opened="false")
+					h1 Drone-event
+					.row
+						paper-radio-group#type(selected="entered")
+							paper-radio-button(name="entered", label="entered")
+							paper-radio-button(name="moved", label="moved")
+							paper-radio-button(name="removed", label="removed")
+					.row
+						paper-radio-group#proximity(selected="far")
+							paper-radio-button(name="far", label="far")
+							paper-radio-button(name="near", label="near")
+							paper-radio-button(name="immediate", label="immediate")
+					.row
+						paper-input(id="baseStationId", value="Station-1")
+					.row
+						paper-input(id="distance", value="2")
+					.row
+						paper-input(id="beaconUuid", value="1234-1234-1234")
+					.row
+						paper-input(id="beaconMajor", value="2")
+					.row
+						paper-input(id="beaconMinor", value="3")
+					.row
+						paper-button#send-drone(label="send drone event")
 			#log
 		#game-container(style="display: none")
 			#stations.clearfix
