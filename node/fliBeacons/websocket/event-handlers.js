@@ -6,6 +6,7 @@ var game = require('../game/game.js').game,
     baseStationsEvent = 'baseStations',
     baseStationRemovedEvent = 'baseStationRemoved',
     baseStationAddedEvent = 'baseStationAdded',
+    baseStationUpdatedEvent = 'baseStationUpdated',
     
     removeBaseStationOnDisconnect = function(req) {
         baseStations = baseStations.filter(function(element) {
@@ -55,15 +56,21 @@ var game = require('../game/game.js').game,
     
     baseStation = function(req) {
         var baseStation = req.data || {},
+            baseStationEvent = baseStationAddedEvent,
             alreadyAddedBaseStation = function(element) {
-                return element.id !== baseStation.id;
+                if (element.id !== baseStation.id) {
+                    baseStationEvent = baseStationUpdatedEvent;
+                    return true;
+                }
+                
+                return false;
             };
         
         baseStation = enrichWithSocketId(req, baseStation);
         baseStations = baseStations.filter(alreadyAddedBaseStation);
         
         baseStations.push(baseStation);
-        req.io.manager.sockets.in(monitorRoom).emit(baseStationAddedEvent, baseStation);
+        req.io.manager.sockets.in(monitorRoom).emit(baseStationEvent, baseStation);
     },
     
     startCourse = function(req) {
