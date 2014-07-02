@@ -8,7 +8,8 @@
 		game = q("#game-container"),
 		socket = io.connect(),
 		stationCreatedCount = 0,
-        listeners = []; 
+        listeners = [],
+        events = ['drone', 'baseStations', 'baseStationAdded', 'baseStationUpdated', 'baseStationRemoved', 'updated', 'finished', 'activate'];
     
     global.socket = socket;
     
@@ -22,29 +23,14 @@
 			});
 		}
 	};
-		
-	socket.on("drone", function (drone) {
-		console.log(drone);
-		global.messageBus.fire("drone", drone);
-	});
-	socket.on("baseStations", function (stations) {
-		global.messageBus.fire("baseStations", stations);
-	});
-	socket.on("baseStationAdded", function (station) {
-		global.messageBus.fire("baseStationAdded", station);
-	});
-	socket.on("baseStationRemoved", function (station) {
-		global.messageBus.fire("baseStationRemoved", station);
-	});
-	socket.on("updated", function (gameState) {
-		global.messageBus.fire("updated", gameState);
-	});
-	socket.on("finished", function (gameState) {
-		global.messageBus.fire("finished", gameState);
-	});
-	socket.on("activate", function (baseStation) {
-		global.messageBus.fire("activate", baseStation);
-	});
+
+    events.forEach(function (e) {
+        socket.on(e, function(data) {
+            console.log(data);
+            global.messageBus.fire(e, data);
+        });
+    });
+
 		
 	socket.emit('ready', {
 		clientType: "monitor"
@@ -57,6 +43,7 @@
 		} else {
 			monitor.style.display = "none";
 			game.style.display = "block";
+            global.messageBus.fire('mapSelected');
 		}
 	});
 	
@@ -84,11 +71,10 @@
 	q("#station").addEventListener("click", function () {
         var max = 0.01,
             min = -0.01;
-        stationCreatedCount++;
+        stationCreatedCount ++;
 		socket.emit("baseStation", {
 			id: "id-" + stationCreatedCount,
 			name: "Station " + stationCreatedCount,
-			id: "Station-" + stationCreatedCount,
             lat: 47.670162 + Math.random() * (max - min) + min,
             lng: 8.95015 + Math.random() * (max - min) + min
         });
