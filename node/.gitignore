@@ -1,4 +1,5 @@
 node_modules/
 .idea
-.css
+*.css
 fliBeacons/public/components
+
