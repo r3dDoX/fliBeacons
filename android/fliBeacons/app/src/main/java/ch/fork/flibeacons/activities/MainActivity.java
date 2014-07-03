@@ -11,6 +11,7 @@ import android.hardware.Camera;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.IBinder;
 import android.util.Base64;
 import android.util.Log;
@@ -28,7 +29,11 @@ import com.squareup.otto.Subscribe;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Collection;
+import java.util.List;
+import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -66,7 +71,6 @@ public class MainActivity extends BaseActivity {
 
     private boolean bound;
     private Camera camera;
-
     private static final int IMAGE_HEIGHT = 400;
     public static final int CAMERA_ROTATION = 90;
 
@@ -94,14 +98,12 @@ public class MainActivity extends BaseActivity {
         public void onPictureTaken(final byte[] data, Camera camera) {
             long start = System.currentTimeMillis();
 
-            //scale bitmap
-            ByteArrayInputStream bis = new ByteArrayInputStream(data);
-            Bitmap scaledBitmap = BitmapScaler.scaleToFitHeight(BitmapFactory.decodeStream(bis), IMAGE_HEIGHT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length);
 
             //rotate image
             Matrix matrix = new Matrix();
             matrix.postRotate(CAMERA_ROTATION);
-            Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, false);
+            Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
 
             //compress and convert bitmap to byte[]
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -220,8 +222,14 @@ public class MainActivity extends BaseActivity {
                         if (camera != null) {
                             try {
                                 Log.i(TAG, "taking picture");
+
                                 Camera.Parameters param = camera.getParameters();
-                                param.setPictureSize(IMAGE_HEIGHT, IMAGE_HEIGHT);
+                                List<Camera.Size> sizes = param.getSupportedPictureSizes();
+                                // Set lowest possible picture size
+                                Camera.Size mSize = sizes.get(sizes.size() - 1);
+                                param.setPictureSize(mSize.width, mSize.height);
+                                camera.setParameters(param);
+
                                 camera.startPreview();
                                 camera.takePicture(null, null, capturedImage);
                             } catch (Exception e) {
