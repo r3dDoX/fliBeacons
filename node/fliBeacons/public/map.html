@@ -17,7 +17,7 @@
 		</style>
 
 		<div class="panel">
-			<google-map latitude='47.670162' longitude='8.95015' zoom='14' fitToMarkers/>
+			<google-map latitude='47.670162' longitude='8.95015' zoom='18'/>
 		</div>
 	</template>
 
@@ -35,6 +35,8 @@
 						console.log(event, data);
 						if (event === 'mapSelected') {
 							map.resize();
+
+							map.map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
 							console.log(map);
 						} else if (event === 'baseStations') {
 							data.forEach(function (station) {
@@ -46,6 +48,12 @@
 							addMapMarker(data);
 						} else if (event === 'baseStationUpdated') {
 							stations[data.id] = data;
+							map.clear();
+							for (var id in stations) {
+								addMapMarker(stations[id]);
+							}
+						} else if (event === 'baseStationRemoved') {
+							stations[data.id] = undefined;
 							map.clear();
 							for (var id in stations) {
 								addMapMarker(stations[id]);
