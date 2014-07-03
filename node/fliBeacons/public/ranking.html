@@ -56,8 +56,24 @@
     
     <script>
     (function(global) {
-        var renderBodyRows = function(ranking, tbody) {
-                tbody.innerHTML = '';
+        var clearElement = function(element) {
+                element.innerHTML = '';
+            },
+            
+            appendChilds = function(parent /* as many children as wanted */) {
+                var appendToParent = function(element) {
+                        parent.appendChild(element);
+                    };
+
+                Array.prototype.slice.call(arguments).splice(1, arguments.length).forEach(appendToParent);
+                
+                return parent;
+            },
+            
+            renderBodyRows = function(ranking, history, tbody) {
+                var lastPoints = history.pop();
+            
+                clearElement(tbody);
                 if (ranking.length > 0) {
                     ranking.forEach(function(element, index) {
                         var row = document.createElement('tr'),
@@ -66,14 +82,10 @@
                             points = document.createElement('td');
                         
                         rank.innerHTML = index + 1;
-                        drone.innerHTML = element.drone.uuid;
+                        drone.innerHTML = element.drone.name;
                         points.innerHTML = element.points;
                         
-                        row.appendChild(rank);
-                        row.appendChild(drone);
-                        row.appendChild(points);
-                        
-                        tbody.appendChild(row);
+                        appendChilds(tbody, appendChilds(row, rank, drone, points));
                     });
                 }
             };
@@ -88,7 +100,7 @@
                     if (events.indexOf(event) > -1) {
                         console.log(data);
                         if (data.isRunning === true) {
-                            renderBodyRows(data.ranking, shadowRoot.querySelector('table tbody'));
+                            renderBodyRows(data.ranking, data.history, shadowRoot.querySelector('table tbody'));
                         }
                     }
                 });
