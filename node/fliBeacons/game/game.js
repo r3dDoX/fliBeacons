@@ -33,6 +33,7 @@ var drones = [{uuid: 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', major: 51881, minor
         gameState.isRunning = true;
         gameState.ranking = initRanking();
         gameState.history = initHistory();
+        gameState.activeStation = baseStations[activeStation];
     },
     
     startCourse = function(req, baseStationOrder) {
@@ -61,16 +62,20 @@ var drones = [{uuid: 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', major: 51881, minor
     },
     
     moveOn = function(req, drone) {
-        var sockets = req.io.manager.sockets;
+        var sockets = req.io.manager.sockets,
+            activeBaseStation;
         updateRanking(drone);
         addToHistory('Drone ' + drone.beacon.uuid + ' got Station ' + baseStations[activeStation].id);
         
-        if (activeStation === baseStations.length -1) {
+        if (activeStation === baseStations.length - 1) {
             addToHistory('Game finished');
             gameState.isRunning = false;
             sockets.emit(finishedEvent, gameState);
         } else {
-            sockets.emit(activateEvent, baseStations[++activeStation]);
+            activeBaseStation = baseStations[++activeStation];
+            
+            sockets.emit(activateEvent, activeBaseStation);
+            gameState.activeStation = activeBaseStation;
             sockets.emit(updatedEvent, gameState);
         }
     },
