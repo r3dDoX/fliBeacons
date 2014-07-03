@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -61,6 +62,7 @@ public class MainActivity extends BaseActivity {
     private Camera camera;
 
     private static final int IMAGE_HEIGHT = 400;
+    public static final int CAMERA_ROTATION = 90;
 
     private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -85,9 +87,14 @@ public class MainActivity extends BaseActivity {
             ByteArrayInputStream bis = new ByteArrayInputStream(data);
             Bitmap scaledBitmap = BitmapScaler.scaleToFitHeight( BitmapFactory.decodeStream(bis), IMAGE_HEIGHT);
 
+            //rotate image
+            Matrix matrix = new Matrix();
+            matrix.postRotate(CAMERA_ROTATION);
+            Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, false);
+
             //compress and convert bitmap to byte[]
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 65, byteArrayOutputStream);
+            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 65, byteArrayOutputStream);
             byte[] compressData = byteArrayOutputStream .toByteArray();
 
             //convert byte[] to base64 string
@@ -128,6 +135,8 @@ public class MainActivity extends BaseActivity {
         try {
             camera = Camera.open();
             if (camera != null) {
+                camera.setDisplayOrientation(CAMERA_ROTATION);
+
                 preview.removeAllViews();
                 preview.addView(new ShowCamera(getApplicationContext(), camera));
             }
@@ -166,6 +175,7 @@ public class MainActivity extends BaseActivity {
             //CAPTURE IMAGE
             if (camera != null) {
                 try {
+                    camera.startPreview();
                     camera.takePicture(null, null, capturedImage);
                 }catch(Exception e) {
                     Log.e(TAG, "Failed to take picture");
