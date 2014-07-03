@@ -65,6 +65,7 @@ public class FliBeaconLocationService extends Service implements LocationListene
     @Override
     public void onLocationChanged(Location location) {
         Log.d(TAG, "onLocationChanged: " + location);
+
         sendLocationUpdate(location);
     }
 
@@ -103,7 +104,9 @@ public class FliBeaconLocationService extends Service implements LocationListene
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
         Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        sendLocationUpdate(lastKnownLocation);
+        if (lastKnownLocation != null) {
+            sendLocationUpdate(lastKnownLocation);
+        }
     }
 
     public void stop() {

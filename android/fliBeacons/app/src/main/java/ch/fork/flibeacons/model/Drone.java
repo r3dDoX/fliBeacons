@@ -12,13 +12,15 @@ public class Drone {
     private double distance;
     private Beacon beacon;
     private String baseStationId;
+    private String image;
 
-    public Drone(Type type, Proximity proximity, double distance, Beacon beacon, String baseStationId) {
+    public Drone(Type type, Proximity proximity, double distance, Beacon beacon, String baseStationId, String image) {
         this.type = type;
         this.proximity = proximity;
         this.distance = distance;
         this.beacon = beacon;
         this.baseStationId = baseStationId;
+        this.image = image;
     }
 
     public String getBaseStationId() {
@@ -59,6 +61,14 @@ public class Drone {
 
     public void setBeacon(Beacon beacon) {
         this.beacon = beacon;
+    }
+
+    public String getImage(){
+        return image;
+    }
+
+    public void setImage(String image){
+        this.image = image;
     }
 
     @Override

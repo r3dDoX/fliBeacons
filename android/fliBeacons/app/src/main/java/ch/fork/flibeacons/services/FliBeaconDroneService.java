@@ -7,6 +7,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.FrameLayout;
 
 import com.radiusnetworks.ibeacon.IBeacon;
 import com.squareup.otto.Bus;
@@ -18,8 +19,11 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
+import butterknife.InjectView;
 import ch.fork.flibeacons.FliBeaconApplication;
+import ch.fork.flibeacons.R;
 import ch.fork.flibeacons.activities.SettingsActivity;
+import ch.fork.flibeacons.events.PictureTakenEvent;
 import ch.fork.flibeacons.events.RangeEvent;
 import ch.fork.flibeacons.model.Beacon;
 import ch.fork.flibeacons.model.Drone;
@@ -34,11 +38,16 @@ public class FliBeaconDroneService extends Service {
     FliBeaconApplication fliBeaconApplication;
     @Inject
     Bus bus;
+    @InjectView(R.id.camera_preview)
+    FrameLayout preview;
     private DroneStore droneStore = new DroneStore();
     private String baseStationUUID;
+    private String lastImage;
 
     public FliBeaconDroneService() {
     }
+
+
 
     @Override
     public void onCreate() {
@@ -59,6 +68,12 @@ public class FliBeaconDroneService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
+    }
+
+    @Subscribe
+    public void onPictureTaken(PictureTakenEvent event){
+        lastImage = event.getBase64Image();
+        Log.d(TAG, "new image with length: " + lastImage.length());
     }
 
     @Subscribe
@@ -93,7 +108,7 @@ public class FliBeaconDroneService extends Service {
             }
 
             Beacon beacon = new Beacon(iBeacon.getProximityUuid(), iBeacon.getMajor(), iBeacon.getMinor());
-            Drone drone = new Drone(type, getProximity(iBeacon.getProximity()), iBeacon.getAccuracy(), beacon, baseStationUUID);
+            Drone drone = new Drone(type, getProximity(iBeacon.getProximity()), iBeacon.getAccuracy(), beacon, baseStationUUID, lastImage);
             currentDrones.add(drone);
         }
 
@@ -104,6 +119,7 @@ public class FliBeaconDroneService extends Service {
         Collection<Drone> leftDrones = droneStore.getLeftDrones(currentDrones);
         for (Drone leftDrone : leftDrones) {
             leftDrone.setType(Drone.Type.left);
+            leftDrone.setImage(null); //no image needed for left drones
         }
 
         return leftDrones;
