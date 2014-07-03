@@ -36,11 +36,11 @@ block content
 						paper-button#send-drone(label="send drone event")
 			#log
 		#game-container(style="display: none")
+			#ranking
+				fli-ranking
 			#stations.clearfix
 			#map
 				google-map(latitude='47.670162', longitude='8.95015', zoom='14', fitToMarkers)
-			#ranking
-				fli-ranking
 
 	
 	script(src="/socket.io/socket.io.js")
