@@ -3,6 +3,7 @@ var drones = [{uuid: 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', major: 51881, minor
     activeStation = 0,
     gameState = {},
     activateEvent = 'activate',
+    startedEvent = 'started',
     finishedEvent = 'finished',
     updatedEvent = 'updated',
     
@@ -35,12 +36,15 @@ var drones = [{uuid: 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', major: 51881, minor
     },
     
     startCourse = function(req, baseStationOrder) {
+        var sockets = req.io.manager.sockets;
+        
         baseStations = baseStationOrder;
         activeStation = 0;
         initGameState();
         
         if (baseStations.length > 0) {
-            req.io.manager.sockets.emit(activateEvent, baseStations[activeStation]);
+            sockets.emit(startedEvent, gameState);
+            sockets.emit(activateEvent, baseStations[activeStation]);
         }
     },
     
