@@ -108,6 +108,7 @@ public class FliBeaconDroneService extends Service {
 
             Beacon beacon = new Beacon(iBeacon.getProximityUuid(), iBeacon.getMajor(), iBeacon.getMinor());
             Drone drone = new Drone(type, getProximity(iBeacon.getProximity()), iBeacon.getAccuracy(), beacon, baseStationUUID, lastImage);
+            lastImage = null;
             currentDrones.add(drone);
         }
 
