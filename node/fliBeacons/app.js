@@ -39,6 +39,7 @@ app.use(function(req, res, next) {
 
 // websocket initialitation
 var io = app.http().io();
+global.sockets = io.io.sockets;
 
 var eventName;
 for (eventName in eventHandlers) {
