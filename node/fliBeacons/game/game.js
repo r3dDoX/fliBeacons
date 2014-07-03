@@ -1,4 +1,4 @@
-var drones = [{uuid: 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', major: 51881, minor: 16836}, {uuid: 'asdf', major: 123, minor: 456}],
+var drones = [{name: 'green', uuid: 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', major: 51881, minor: 16836}, {name:'red', uuid: 'asdf', major: 123, minor: 456}],
     baseStations = [],
     activeStation = 0,
     gameState = { isRunning: false },
@@ -24,8 +24,8 @@ var drones = [{uuid: 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', major: 51881, minor
         return ['Game started'];
     },
     
-    addToHistory = function(text) {
-        gameState.history.push(text);
+    addToHistory = function(object) {
+        gameState.history.push(object);
     },
     
     initGameState = function() {
@@ -64,8 +64,9 @@ var drones = [{uuid: 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', major: 51881, minor
     moveOn = function(req, drone) {
         var sockets = req.io.manager.sockets,
             activeBaseStation;
+        
         updateRanking(drone);
-        addToHistory('Drone ' + drone.beacon.uuid + ' got Station ' + baseStations[activeStation].id);
+        addToHistory({drone: drone, baseStation: baseStations[activeStation]});
         
         if (activeStation === baseStations.length - 1) {
             addToHistory('Game finished');
