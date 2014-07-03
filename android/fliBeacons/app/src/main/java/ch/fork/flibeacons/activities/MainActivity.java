@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.hardware.Camera;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -21,6 +22,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.radiusnetworks.ibeacon.IBeacon;
 import com.squareup.otto.Subscribe;
 
@@ -36,6 +38,8 @@ import ch.fork.flibeacons.FliBeaconApplication;
 import ch.fork.flibeacons.R;
 import ch.fork.flibeacons.events.PictureTakenEvent;
 import ch.fork.flibeacons.events.RangeEvent;
+import ch.fork.flibeacons.events.ServerEvent;
+import ch.fork.flibeacons.model.BaseStation;
 import ch.fork.flibeacons.services.FliBeaconRangingService;
 import ch.fork.flibeacons.util.BitmapScaler;
 import ch.fork.flibeacons.util.ShowCamera;
@@ -65,6 +69,9 @@ public class MainActivity extends BaseActivity {
 
     private static final int IMAGE_HEIGHT = 400;
     public static final int CAMERA_ROTATION = 90;
+
+    private MediaPlayer activeBaseStationSound;
+    private boolean isActiveBaseStation;
 
     private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -122,7 +129,6 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 fliBeaconService.startBeaconRanging();
-                //startCapturing();
             }
         });
 
@@ -132,11 +138,13 @@ public class MainActivity extends BaseActivity {
                 distanceTextView.setText("");
                 rangeTextView.setText("");
                 fliBeaconService.stopBeaconRanging();
-                //stopCapturing();
             }
         });
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        activeBaseStationSound = MediaPlayer.create(getApplicationContext(), R.raw.basestation);
+        activeBaseStationSound.setLooping(true);
     }
 
     protected void onResume() {
@@ -174,6 +182,27 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
+    }
+
+    @Subscribe
+    public void onServerEvent(ServerEvent event) {
+        Log.i(TAG, "Got server event" + event.getEvent());
+        if (event.getEvent().equals("activate")) {
+            BaseStation activeBaseStation = new Gson().fromJson(event.getArgs()[0], BaseStation.class);
+            if (activeBaseStation.getId().equals(fliBeaconApplication.getBaseStationUUID())) {
+                Log.i(TAG, "This is the active base station!");
+                activeBaseStationSound.start();
+                isActiveBaseStation = true;
+            } else {
+                Log.i(TAG, "Not the active base station!");
+                activeBaseStationSound.stop();
+                isActiveBaseStation = false;
+            }
+        }else if(event.getEvent().equals("finished")){
+            Log.i(TAG, "Game is finished");
+            activeBaseStationSound.stop();
+            isActiveBaseStation = false;
+        }
     }
 
     @Subscribe
