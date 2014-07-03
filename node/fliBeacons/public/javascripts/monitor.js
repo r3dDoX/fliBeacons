@@ -59,6 +59,18 @@
 			updateBaseStations([data]);
 		} else if (event === "baseStationRemoved") {
 			removeBaseStation(data);
+		} else if (event === "activate") { 
+			var id = createId(data.id),
+				baseStation = document.getElementById(id),
+				allStations = document.getElementsByTagName("fli-base-station");
+				
+			for (var i = 0; i < allStations.length; i++) {
+				allStations.item(i).classList.remove("active");
+			}
+			
+			if (baseStation) {
+				baseStation.classList.add("active");	
+			}
 		} else if (event === "drone") {
 			if (data.type === "entered") {
 				addDrone(data);
