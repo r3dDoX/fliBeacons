@@ -56,7 +56,6 @@ var game = require('../game/game.js').game,
     },
     
     baseStation = function(req) {
-
         console.log(req.data);
         var baseStation = req.data || {},
             baseStationEvent = baseStationAddedEvent,

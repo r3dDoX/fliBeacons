@@ -29,6 +29,8 @@ public class StartActivity extends BaseActivity {
 
     @InjectView(R.id.registerAndStart)
     Button registerAndStartButton;
+    @InjectView(R.id.disconnect)
+    Button disconnectButton;
 
     @Inject
     FliBeaconApplication fliBeaconApplication;
@@ -49,8 +51,8 @@ public class StartActivity extends BaseActivity {
                     String url = defaultSharedPreferences.getString(SettingsActivity.KEY_URL, "http://flibeacons.ngrok.com");
                     Log.i(TAG, "Connecting to URL: " + url);
                     SocketIO socket = new SocketIO(url);
-                    socket.connect(fliBeaconApplication);
                     fliBeaconApplication.setSocket(socket);
+                    socket.connect(fliBeaconApplication);
 
                     Ready ready = new Ready();
                     ready.setClientType("baseStation");
@@ -60,6 +62,12 @@ public class StartActivity extends BaseActivity {
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
+            }
+        });
+        disconnectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fliBeaconApplication.getSocket().disconnect();
             }
         });
     }
