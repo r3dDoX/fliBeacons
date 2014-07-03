@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ch.fork.flibeacons" >
+    package="ch.fork.flibeacons">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -12,11 +12,13 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".activities.MainActivity"
-            android:label="@string/app_name" >
-            android:label="@string/app_name"></activity>
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
+            android:label="@string/app_name">
+        </activity>
 
         <service
             android:name=".services.FliBeaconRangingService"
@@ -25,10 +27,12 @@
 
         <activity
             android:name=".activities.SettingsActivity"
-            android:label="@string/title_activity_settings" />
+            android:label="@string/title_activity_settings"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.StartActivity"
-            android:label="@string/title_activity_start">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -42,8 +46,7 @@
         <service
             android:name=".services.FliBeaconDroneService"
             android:enabled="true"
-            android:exported="true" >
-        </service>
+            android:exported="true"></service>
     </application>
 
 </manifest>

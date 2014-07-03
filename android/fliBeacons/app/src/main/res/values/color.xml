@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="station_activated">#A1FFA7</color>
+    <color name="station_deactivated">#FFA1A1</color>
+    <color name="station_offline">#FFFFFF</color>
+</resources>
