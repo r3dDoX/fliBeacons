@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -58,6 +59,8 @@ public class MainActivity extends BaseActivity {
     protected static final String TAG = "RangingActivity";
     @InjectView(R.id.uuid_range_sv)
     ScrollView uuidRangeSV;
+    @InjectView(R.id.layout_container)
+    LinearLayout layoutContainer;
     @InjectView(R.id.camera_preview)
     FrameLayout preview;
     @InjectView(R.id.startRanging)
@@ -73,9 +76,7 @@ public class MainActivity extends BaseActivity {
     private Camera camera;
     private static final int IMAGE_HEIGHT = 400;
     public static final int CAMERA_ROTATION = 90;
-
     private MediaPlayer activeBaseStationSound;
-    private boolean isActiveBaseStation;
 
     private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -150,7 +151,7 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         try {
-            camera = Camera.open();
+            camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT);
             if (camera != null) {
                 camera.setDisplayOrientation(CAMERA_ROTATION);
 
@@ -192,16 +193,16 @@ public class MainActivity extends BaseActivity {
             if (activeBaseStation.getId().equals(fliBeaconApplication.getBaseStationUUID())) {
                 Log.i(TAG, "This is the active base station!");
                 activeBaseStationSound.start();
-                isActiveBaseStation = true;
+                layoutContainer.setBackgroundColor(getResources().getColor(R.color.station_activated));
             } else {
                 Log.i(TAG, "Not the active base station!");
                 activeBaseStationSound.stop();
-                isActiveBaseStation = false;
+                layoutContainer.setBackgroundColor(getResources().getColor(R.color.station_deactivated));
             }
         }else if(event.getEvent().equals("finished")){
             Log.i(TAG, "Game is finished");
             activeBaseStationSound.stop();
-            isActiveBaseStation = false;
+            layoutContainer.setBackgroundColor(getResources().getColor(R.color.station_offline));
         }
     }
 
