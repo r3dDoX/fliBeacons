@@ -49,4 +49,5 @@ dependencies {
     compile 'io.socket:socket.io-client:0.2.1'
     // You must install or update the Support Repository through the SDK manager to use this dependency.
     compile 'com.android.support:support-v4:19.+'
+    compile 'com.koushikdutta.async:androidasync:1.2.6'
 }

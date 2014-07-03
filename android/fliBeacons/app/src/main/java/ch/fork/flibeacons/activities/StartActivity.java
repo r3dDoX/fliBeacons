@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
-import com.google.gson.Gson;
 import com.squareup.otto.Subscribe;
 
 import java.net.MalformedURLException;
@@ -25,7 +24,6 @@ import butterknife.InjectView;
 import ch.fork.flibeacons.FliBeaconApplication;
 import ch.fork.flibeacons.R;
 import ch.fork.flibeacons.events.ConnectedEvent;
-import ch.fork.flibeacons.model.Ready;
 import io.socket.SocketIO;
 
 public class StartActivity extends BaseActivity {
@@ -54,28 +52,7 @@ public class StartActivity extends BaseActivity {
         registerAndStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-
-                    progressBar.setVisibility(View.VISIBLE);
-                    progressBar.setIndeterminate(true);
-
-                    SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(StartActivity.this);
-                    String url = defaultSharedPreferences.getString(SettingsActivity.KEY_URL, "http://flibeacons.ngrok.com");
-                    Log.i(TAG, "Connecting to URL: " + url);
-                    SocketIO socket = new SocketIO(url);
-                    socket.setDefaultSSLSocketFactory(SSLContext.getDefault());
-                    fliBeaconApplication.setSocket(socket);
-                    socket.connect(fliBeaconApplication);
-
-                    Ready ready = new Ready();
-                    ready.setClientType("baseStation");
-                    socket.emit("ready", new Gson().toJson(ready));
-                    fliBeaconApplication.getFliLocationService().start();
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                }
+                connect();
             }
         });
         disconnectButton.setOnClickListener(new View.OnClickListener() {
@@ -86,6 +63,28 @@ public class StartActivity extends BaseActivity {
                 progressBar.setIndeterminate(false);
             }
         });
+    }
+
+    private void connect() {
+        try {
+
+            progressBar.setVisibility(View.VISIBLE);
+            progressBar.setIndeterminate(true);
+
+            SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            String url = defaultSharedPreferences.getString(SettingsActivity.KEY_URL, "http://flibeacons.ngrok.com");
+            Log.i(TAG, "Connecting to URL: " + url);
+
+            SocketIO socket = new SocketIO(url);
+            socket.setDefaultSSLSocketFactory(SSLContext.getDefault());
+            fliBeaconApplication.setSocket(socket);
+            socket.connect(fliBeaconApplication);
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
