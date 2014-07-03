@@ -5,23 +5,19 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.gson.JsonElement;
 import com.squareup.otto.Bus;
 
-import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 import javax.inject.Inject;
 
-import ch.fork.flibeacons.activities.SettingsActivity;
 import ch.fork.flibeacons.events.ServerEvent;
 import ch.fork.flibeacons.services.FliBeaconDroneService;
 import ch.fork.flibeacons.services.FliBeaconLocationService;
@@ -43,7 +39,9 @@ public class FliBeaconApplication extends Application implements IOCallback {
     private FliBeaconRangingService fliBeaconService;
     private FliBeaconDroneService fliBeaconDroneService;
     private boolean boundDroneService;
-    /** Defines callbacks for service binding, passed to bindService() */
+    /**
+     * Defines callbacks for service binding, passed to bindService()
+     */
     private ServiceConnection droneServiceConnection = new ServiceConnection() {
 
         @Override
@@ -118,16 +116,14 @@ public class FliBeaconApplication extends Application implements IOCallback {
         baseStationUUID = UUID.randomUUID().toString();
 
 
-        try {
-            socket = new SocketIO("http://flibeacons1.ngrok.com/");
-            socket.connect(this);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
     }
 
     public SocketIO getSocket() {
         return socket;
+    }
+
+    public void setSocket(SocketIO socket) {
+        this.socket = socket;
     }
 
     @Override

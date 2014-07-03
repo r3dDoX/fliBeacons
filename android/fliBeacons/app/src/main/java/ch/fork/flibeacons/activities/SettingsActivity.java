@@ -8,8 +8,8 @@ import ch.fork.flibeacons.fragments.SettingsFragment;
 
 public class SettingsActivity extends PreferenceActivity {
 
-    public static final String KEY_BASESTATION_UUID = "\"baseStationUUID\"";
     public static final String KEY_BASESTATION_NAME = "baseStationName";
+    public static final String KEY_URL = "url";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
