@@ -7,7 +7,24 @@
 			border: solid 1px #ccc;
 		}
             
+        #rankingTable {
+            width: 100%;
+            text-align: left;
+        }
+            
+        #rankingTable thead tr th {
+            padding: 16px;
+            color: #fff;
+            background-color: #4184f3;
+        }
+            
+        #rankingTable tbody tr td {
+            padding: 16px;
+            background-color: #c5d9fb;
+        }
+            
         #startGameButton {
+            margin-top: 20px;
             background: #4285f4;
             color: #fff;
         }
@@ -23,11 +40,13 @@
 		
         <h1>Ranking</h1>
         
-        <table>
+        <table id="rankingTable" cellspacing="0" cellpadding="0">
             <thead>
-                <th>#</th>
-                <th>Drone</th>
-                <th>Points</th>
+                <tr>
+                    <th>#</th>
+                    <th>Drone</th>
+                    <th>Points</th>
+                </tr>
             </thead>
             <tbody>
                 
@@ -67,7 +86,7 @@
                 shadowRoot.querySelector('paper-button').addEventListener('click', function() { window.socket.emit('startCourse'); });
 
                 global.messageBus.register(function (event, data) {
-                    if (event === 'updated' || event === 'finished') {
+                    if (event === 'updated' || event === 'finished' || event === 'started') {
                         renderBodyRows(data.ranking, shadowRoot.querySelector('table tbody'));
                     }
                 });
