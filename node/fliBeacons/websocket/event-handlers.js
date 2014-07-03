@@ -7,6 +7,7 @@ var game = require('../game/game.js').game,
     baseStationRemovedEvent = 'baseStationRemoved',
     baseStationAddedEvent = 'baseStationAdded',
     baseStationUpdatedEvent = 'baseStationUpdated',
+    gameStateEvent = 'gameState',
     
     removeBaseStationOnDisconnect = function(req) {
         baseStations = baseStations.filter(function(element) {
@@ -80,6 +81,10 @@ var game = require('../game/game.js').game,
         
         game.startCourse(req, baseStations.sort(randomSorter));
         
+    },
+    
+    gameState = function(req) {
+        req.socket.emit(gameStateEvent, game.getGameState());
     };
 
 exports.handlers = {
@@ -87,5 +92,6 @@ exports.handlers = {
     disconnect: disconnect,
     drone: drone,
     baseStation: baseStation,
-    startCourse: startCourse
+    startCourse: startCourse,
+    gameState: gameState
 };

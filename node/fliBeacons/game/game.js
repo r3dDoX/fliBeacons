@@ -1,7 +1,7 @@
 var drones = [{uuid: 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', major: 51881, minor: 16836}, {uuid: 'asdf', major: 123, minor: 456}],
     baseStations = [],
     activeStation = 0,
-    gameState = {},
+    gameState = { isRunning: false },
     activateEvent = 'activate',
     startedEvent = 'started',
     finishedEvent = 'finished',
@@ -80,10 +80,15 @@ var drones = [{uuid: 'B9407F30-F5F8-466E-AFF9-25556B57FE6D', major: 51881, minor
             drone.proximity === 'near' || drone.proximity === 'immediate') {
             moveOn(req, drone);
         }
+    },
+    
+    getGameState = function() {
+        return gameState;
     };
 
 exports.game = {
     startCourse: startCourse,
     checkGameState: checkGameState,
-    isRunning: isRunning
+    isRunning: isRunning,
+    getGameState: getGameState
 };
