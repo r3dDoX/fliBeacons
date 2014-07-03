@@ -15,12 +15,14 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -54,10 +56,8 @@ public class MainActivity extends BaseActivity {
 
 
     protected static final String TAG = "RangingActivity";
-    @InjectView(R.id.distanceTextView)
-    TextView distanceTextView;
-    @InjectView(R.id.rangeTextView)
-    TextView rangeTextView;
+    @InjectView(R.id.uuid_range_sv)
+    ScrollView uuidRangeSV;
     @InjectView(R.id.camera_preview)
     FrameLayout preview;
     @InjectView(R.id.startRanging)
@@ -137,8 +137,6 @@ public class MainActivity extends BaseActivity {
         stopRangingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                distanceTextView.setText("");
-                rangeTextView.setText("");
                 fliBeaconService.stopBeaconRanging();
             }
         });
@@ -225,8 +223,8 @@ public class MainActivity extends BaseActivity {
 
                                 Camera.Parameters param = camera.getParameters();
                                 List<Camera.Size> sizes = param.getSupportedPictureSizes();
-                                // Set lowest possible picture size
-                                Camera.Size mSize = sizes.get(sizes.size() - 1);
+                                // Set pre lowest possible picture size
+                                Camera.Size mSize = sizes.get(sizes.size() - 2);
                                 param.setPictureSize(mSize.width, mSize.height);
                                 camera.setParameters(param);
 
@@ -243,20 +241,27 @@ public class MainActivity extends BaseActivity {
                 asyncTask.execute();
             }
 
-            IBeacon iBeacon = iBeacons.iterator().next();
-            Log.i(TAG, "The first iBeacon I see is about " + iBeacon.getAccuracy() + " meters away.");
-            distanceTextView.setText("" + iBeacon.getAccuracy());
-            int proximity = iBeacon.getProximity();
-            if (proximity == IBeacon.PROXIMITY_FAR) {
-                rangeTextView.setText("FAR");
-            } else if (proximity == IBeacon.PROXIMITY_NEAR) {
-                rangeTextView.setText("NEAR");
-            } else if (proximity == IBeacon.PROXIMITY_IMMEDIATE) {
-                rangeTextView.setText("IMMEDIATE");
-            } else {
-                rangeTextView.setText("UNKNOWN");
+            uuidRangeSV.removeAllViews();
+            for (IBeacon iBeacon : iBeacons) {
+                View row = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.uuid_range_row, null);
+                ((TextView)row.findViewById(R.id.uuidTextView)).setText(iBeacon.getProximityUuid());
+                ((TextView)row.findViewById(R.id.rangeTextView)).setText(getRangeFromProximity(iBeacon));
+                uuidRangeSV.addView(row);
             }
         }
+    }
+
+    private String getRangeFromProximity(IBeacon iBeacon) {
+        String range = "UNKNOWN";
+        int proximity = iBeacon.getProximity();
+        if (proximity == IBeacon.PROXIMITY_FAR) {
+            range = "FAR";
+        } else if (proximity == IBeacon.PROXIMITY_NEAR) {
+            range = "NEAR";
+        } else if (proximity == IBeacon.PROXIMITY_IMMEDIATE) {
+            range = "IMMEDIATE";
+        }
+        return range;
     }
 
     @Override
