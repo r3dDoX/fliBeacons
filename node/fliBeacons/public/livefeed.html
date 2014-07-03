@@ -1,0 +1,39 @@
+<link rel="import" href="/components/polymer/polymer.html">
+
+<polymer-element name="fli-livefeed" attributes="">
+    <template>
+		<style>
+		:host {
+
+		}
+		</style>
+		
+        <h1>Livefeed</h1>
+
+		<img id='feed'/>
+    </template>
+    
+    <script>
+    (function(global) {
+
+        Polymer('fli-livefeed', {
+			ready: function () {
+				console.log("livefeed is ready");
+
+				var shadowRoot = this.shadowRoot;
+				var feedImage = shadowRoot.querySelector("#feed");
+
+				global.messageBus.register(function (event, data) {
+					console.log(event, data);
+					if (event === 'drone') {
+						console.log('new image');
+						var image = data.image;
+						feedImage.src='data:image/jpg;base64,' + image;
+					}
+				});
+
+            }
+        });
+    }(window));
+    </script>
+</polymer-element>
