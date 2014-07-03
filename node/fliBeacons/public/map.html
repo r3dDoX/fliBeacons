@@ -1,68 +1,72 @@
 <link rel="import" href="/components/polymer/polymer.html">
 
 <polymer-element name="fli-map" attributes="">
-    <template>
+	<template>
 		<style>
-		:host {
+			:host {
 
-		}
-		google-map {
-			clear: both;
-			display: block;
-			height: 600px;
-			width: 600px;
-		}
+			}
+
+			google-map {
+				clear: both;
+				display: block;
+				height: 600px;
+				width: 600px;
+			}
 
 		</style>
-		<google-map latitude='47.670162'  longitude='8.95015' zoom='14' fitToMarkers/>
-    </template>
-    
-    <script>
-    (function(global) {
 
-        Polymer('fli-map', {
-			ready: function () {
-				console.log("map is ready");
+		<div class="panel">
+			<google-map latitude='47.670162' longitude='8.95015' zoom='14' fitToMarkers/>
+		</div>
+	</template>
 
-				var shadowRoot = this.shadowRoot;
-				var map = shadowRoot.querySelector("google-map"),
-						stations = [];
-				global.messageBus.register(function (event, data) {
-					console.log(event, data);
-					if (event === 'mapSelected') {
-						map.resize();
-						console.log(map);
-					} else if (event === 'baseStations') {
-						data.forEach(function (station) {
-							stations[station.id] = station;
-							addMapMarker(station);
-						});
-					} else if (event === 'baseStationAdded') {
-						stations[data.id] = data;
-						addMapMarker(data);
-					} else if (event === 'baseStationUpdated') {
-						stations[data.id] = data;
-						map.clear();
-						for (var id in stations) {
-							addMapMarker(stations[id]);
+	<script>
+		(function (global) {
+
+			Polymer('fli-map', {
+				ready: function () {
+					console.log("map is ready");
+
+					var shadowRoot = this.shadowRoot;
+					var map = shadowRoot.querySelector("google-map"),
+							stations = [];
+					global.messageBus.register(function (event, data) {
+						console.log(event, data);
+						if (event === 'mapSelected') {
+							map.resize();
+							console.log(map);
+						} else if (event === 'baseStations') {
+							data.forEach(function (station) {
+								stations[station.id] = station;
+								addMapMarker(station);
+							});
+						} else if (event === 'baseStationAdded') {
+							stations[data.id] = data;
+							addMapMarker(data);
+						} else if (event === 'baseStationUpdated') {
+							stations[data.id] = data;
+							map.clear();
+							for (var id in stations) {
+								addMapMarker(stations[id]);
+							}
 						}
+					});
+
+					function addMapMarker(station) {
+						var marker = document.createElement("google-map-marker");
+						marker.setAttribute("id", station.id);
+						marker.longitude = station.lng;
+						marker.latitude = station.lat;
+						marker.setAttribute('title', station.name);
+
+						map.appendChild(marker);
+
 					}
-				});
 
-				function addMapMarker(station) {
-					var marker = document.createElement("google-map-marker");
-					marker.setAttribute("id", station.id);
-					marker.longitude = station.lng;
-					marker.latitude = station.lat;
-					marker.setAttribute('title', station.name);
-
-					map.appendChild(marker);
-
+					global.socket.emit('baseStations');
 				}
-
-				global.socket.emit('baseStations');
-            }
-        });
-    }(window));
-    </script>
+			});
+		}(window));
+	</script>
 </polymer-element>
