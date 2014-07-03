@@ -7,5 +7,6 @@
     <string name="pref_default_basestationName">basestation 1</string>
     <string name="pref_title_baseStationName">Basestation Name</string>
     <string name="title_activity_start">StartActivity</string>
+    <string name="pref_url">FliBeacons Server URL</string>
 
 </resources>

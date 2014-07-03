@@ -8,6 +8,13 @@
         android:selectAllOnFocus="true"
         android:singleLine="true"
         android:title="@string/pref_title_baseStationName" />
+    <ListPreference
+        android:defaultValue="http://flibeacons1.ngrok.com"
+        android:dialogTitle="@string/pref_url"
+        android:entries="@array/pref_url_entries"
+        android:entryValues="@array/pref_url_entries"
+        android:key="url"
+        android:title="@string/pref_url" />
 
 
 </PreferenceScreen>

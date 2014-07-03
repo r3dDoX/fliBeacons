@@ -45,6 +45,7 @@ var game = require('../game/game.js').game,
     
     drone = function(req) {
         var data = req.data;
+        console.log(data);
         
         if (data) {
             req.socket.broadcast.emit(droneEvent, data);
@@ -56,6 +57,8 @@ var game = require('../game/game.js').game,
     },
     
     baseStation = function(req) {
+
+        console.log(req.data);
         var baseStation = req.data || {},
             baseStationEvent = baseStationAddedEvent,
             alreadyAddedBaseStation = function(element) {
