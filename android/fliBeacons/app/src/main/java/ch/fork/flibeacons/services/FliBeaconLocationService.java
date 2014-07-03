@@ -30,6 +30,7 @@ public class FliBeaconLocationService extends Service implements LocationListene
     private FliBeaconApplication fliBeaconApplication;
     private Gson gson;
     private SharedPreferences sharedPref;
+    private String baseStationUUID;
 
     public FliBeaconLocationService() {
     }
@@ -45,16 +46,13 @@ public class FliBeaconLocationService extends Service implements LocationListene
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(fliBeaconApplication);
 
+        baseStationUUID = fliBeaconApplication.getBaseStationUUID();
         gson = new Gson();
 
     }
 
     private String getBaseStationNameFromSettings() {
         return sharedPref.getString(SettingsActivity.KEY_BASESTATION_NAME, UUID.randomUUID().toString());
-    }
-
-    private String getBaseStationUUIDFromSettings() {
-        return sharedPref.getString(SettingsActivity.KEY_BASESTATION_UUID, UUID.randomUUID().toString());
     }
 
     @Override
@@ -73,11 +71,15 @@ public class FliBeaconLocationService extends Service implements LocationListene
         BaseStation baseStation = new BaseStation();
 
         String baseStationNameFromSettings = getBaseStationNameFromSettings();
-        String baseStationUUID = getBaseStationUUIDFromSettings();
         baseStation.setId(baseStationUUID);
         baseStation.setName(baseStationNameFromSettings);
-        baseStation.setLat(location.getLatitude());
-        baseStation.setLng(location.getLongitude());
+        if(location != null) {
+            baseStation.setLat(location.getLatitude());
+            baseStation.setLng(location.getLongitude());
+        } else {
+            baseStation.setLat(47.670162);
+            baseStation.setLng(8.95015);
+        }
 
 
         fliBeaconApplication.getSocket().emit("baseStation", gson.toJson(baseStation));
@@ -104,9 +106,7 @@ public class FliBeaconLocationService extends Service implements LocationListene
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
         Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        if (lastKnownLocation != null) {
-            sendLocationUpdate(lastKnownLocation);
-        }
+        sendLocationUpdate(lastKnownLocation);
     }
 
     public void stop() {

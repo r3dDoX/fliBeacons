@@ -55,8 +55,7 @@ public class FliBeaconDroneService extends Service {
         FliBeaconApplication fliBeaconApplication = (FliBeaconApplication) getApplication();
         fliBeaconApplication.inject(this);
         bus.register(this);
-        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        baseStationUUID = defaultSharedPreferences.getString(SettingsActivity.KEY_BASESTATION_UUID, UUID.randomUUID().toString());
+        baseStationUUID = fliBeaconApplication.getBaseStationUUID();
     }
 
     @Override

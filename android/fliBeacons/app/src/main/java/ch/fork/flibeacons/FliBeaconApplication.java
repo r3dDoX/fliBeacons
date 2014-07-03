@@ -98,6 +98,7 @@ public class FliBeaconApplication extends Application implements IOCallback {
         }
     };
     private SocketIO socket;
+    private String baseStationUUID;
 
     @Override
     public void onCreate() {
@@ -114,10 +115,8 @@ public class FliBeaconApplication extends Application implements IOCallback {
         Intent intentDroneService = new Intent(this, FliBeaconDroneService.class);
         bindService(intentDroneService, droneServiceConnection, Context.BIND_AUTO_CREATE);
 
-        String baseStationUUID = UUID.randomUUID().toString();
+        baseStationUUID = UUID.randomUUID().toString();
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPref.edit().putString(SettingsActivity.KEY_BASESTATION_UUID, baseStationUUID).commit();
 
         try {
             socket = new SocketIO("http://flibeacons1.ngrok.com/");
@@ -205,5 +204,9 @@ public class FliBeaconApplication extends Application implements IOCallback {
     @Override
     public void onError(SocketIOException socketIOException) {
 
+    }
+
+    public String getBaseStationUUID() {
+        return baseStationUUID;
     }
 }
