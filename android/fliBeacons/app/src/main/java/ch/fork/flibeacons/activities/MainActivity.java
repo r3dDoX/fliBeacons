@@ -11,7 +11,6 @@ import android.hardware.Camera;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.IBinder;
 import android.util.Base64;
 import android.util.Log;
@@ -30,13 +29,9 @@ import com.google.gson.Gson;
 import com.radiusnetworks.ibeacon.IBeacon;
 import com.squareup.otto.Subscribe;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.Collection;
 import java.util.List;
-import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -49,14 +44,15 @@ import ch.fork.flibeacons.events.RangeEvent;
 import ch.fork.flibeacons.events.ServerEvent;
 import ch.fork.flibeacons.model.BaseStation;
 import ch.fork.flibeacons.services.FliBeaconRangingService;
-import ch.fork.flibeacons.util.BitmapScaler;
 import ch.fork.flibeacons.util.ShowCamera;
 
 
 public class MainActivity extends BaseActivity {
 
 
+    public static final int CAMERA_ROTATION = 90;
     protected static final String TAG = "RangingActivity";
+    private static final int IMAGE_HEIGHT = 400;
     @InjectView(R.id.uuid_range_sv)
     ScrollView uuidRangeSV;
     @InjectView(R.id.layout_container)
@@ -67,17 +63,12 @@ public class MainActivity extends BaseActivity {
     Button startRangingButton;
     @InjectView(R.id.stopRanging)
     Button stopRangingButton;
+    @InjectView(R.id.log)
+    TextView logTextview;
     @Inject
     FliBeaconApplication fliBeaconApplication;
-
     private FliBeaconRangingService fliBeaconService;
-
     private boolean bound;
-    private Camera camera;
-    private static final int IMAGE_HEIGHT = 400;
-    public static final int CAMERA_ROTATION = 90;
-    private MediaPlayer activeBaseStationSound;
-
     private ServiceConnection mConnection = new ServiceConnection() {
 
         @Override
@@ -93,7 +84,9 @@ public class MainActivity extends BaseActivity {
             bound = false;
         }
     };
-
+    private Camera camera;
+    private MediaPlayer activeBaseStationSound;
+    private boolean pictureProcessing = false;
     private final Camera.PictureCallback capturedImage = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(final byte[] data, Camera camera) {
@@ -120,7 +113,6 @@ public class MainActivity extends BaseActivity {
             pictureProcessing = false;
         }
     };
-    private boolean pictureProcessing = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,13 +123,20 @@ public class MainActivity extends BaseActivity {
         startRangingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                uuidRangeSV.removeAllViews();
+                startRangingButton.setEnabled(false);
+                stopRangingButton.setEnabled(true);
                 fliBeaconService.startBeaconRanging();
+
             }
         });
 
         stopRangingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                uuidRangeSV.removeAllViews();
+                startRangingButton.setEnabled(true);
+                stopRangingButton.setEnabled(false);
                 fliBeaconService.stopBeaconRanging();
             }
         });
@@ -188,6 +187,7 @@ public class MainActivity extends BaseActivity {
     @Subscribe
     public void onServerEvent(ServerEvent event) {
         Log.i(TAG, "Got server event" + event.getEvent());
+        logTextview.setText(event.getEvent());
         if (event.getEvent().equals("activate")) {
             BaseStation activeBaseStation = new Gson().fromJson(event.getArgs()[0], BaseStation.class);
             if (activeBaseStation.getId().equals(fliBeaconApplication.getBaseStationUUID())) {
@@ -284,4 +284,5 @@ public class MainActivity extends BaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

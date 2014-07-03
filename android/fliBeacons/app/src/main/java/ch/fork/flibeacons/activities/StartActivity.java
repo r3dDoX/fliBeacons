@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.google.gson.Gson;
+import com.squareup.otto.Subscribe;
 
 import java.net.MalformedURLException;
 
@@ -20,6 +21,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import ch.fork.flibeacons.FliBeaconApplication;
 import ch.fork.flibeacons.R;
+import ch.fork.flibeacons.events.ConnectedEvent;
 import ch.fork.flibeacons.model.Ready;
 import io.socket.SocketIO;
 
@@ -58,7 +60,6 @@ public class StartActivity extends BaseActivity {
                     ready.setClientType("baseStation");
                     socket.emit("ready", new Gson().toJson(ready));
                     fliBeaconApplication.getFliLocationService().start();
-                    startActivity(new Intent(StartActivity.this, MainActivity.class));
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
@@ -90,5 +91,10 @@ public class StartActivity extends BaseActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Subscribe
+    public void event(ConnectedEvent ev) {
+        startActivity(new Intent(StartActivity.this, MainActivity.class));
     }
 }
