@@ -96,7 +96,7 @@
                         drone.innerHTML = element.drone.name;
                         points.innerHTML = element.points;
                         
-                        if (lastPoints && lastPoints.drone.beacon.uuid === element.drone.uuid) {
+                        if (lastPoints.drone && lastPoints.drone.beacon.uuid === element.drone.uuid) {
                             row.classList.add(successClass);
                             setTimeout(function() { row.classList.remove(successClass); }, 500);
                         }
