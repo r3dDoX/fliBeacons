@@ -9,7 +9,7 @@
 		socket = io.connect(),
 		stationCreatedCount = 0,
         listeners = [],
-        events = ['drone', 'baseStations', 'baseStationAdded', 'baseStationUpdated', 'baseStationRemoved', 'updated', 'started', 'finished', 'activate'];
+        events = ['drone', 'baseStations', 'baseStationAdded', 'baseStationUpdated', 'baseStationRemoved', 'updated', 'started', 'finished', 'activate', 'gameState'];
     
     global.socket = socket;
     
