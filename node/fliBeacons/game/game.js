@@ -1,4 +1,4 @@
-var drones = [{name: 'green', uuid: 'b9407f30-f5f8-466e-aff9-25556b57fe6d', major: 51881, minor: 16836}, {name:'red', uuid: 'asdf', major: 123, minor: 456}],
+var drones = [{name: 'drone', uuid: 'b9407f30-f5f8-466e-aff9-25556b57fe6d', major: 51881, minor: 16836}, {name:'human', uuid: 'asdf', major: 123, minor: 456}],
     baseStations = [],
     activeStation = 0,
     gameState = { isRunning: false },
