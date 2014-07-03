@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.hardware.Camera;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Base64;
@@ -82,10 +83,11 @@ public class MainActivity extends BaseActivity {
 
     private final Camera.PictureCallback capturedImage = new Camera.PictureCallback() {
         @Override
-        public void onPictureTaken(byte[] data, Camera camera) {
+        public void onPictureTaken(final byte[] data, Camera camera) {
+            long start = System.currentTimeMillis();
             //scale bitmap
             ByteArrayInputStream bis = new ByteArrayInputStream(data);
-            Bitmap scaledBitmap = BitmapScaler.scaleToFitHeight( BitmapFactory.decodeStream(bis), IMAGE_HEIGHT);
+            Bitmap scaledBitmap = BitmapScaler.scaleToFitHeight(BitmapFactory.decodeStream(bis), IMAGE_HEIGHT);
 
             //rotate image
             Matrix matrix = new Matrix();
@@ -95,15 +97,18 @@ public class MainActivity extends BaseActivity {
             //compress and convert bitmap to byte[]
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 65, byteArrayOutputStream);
-            byte[] compressData = byteArrayOutputStream .toByteArray();
+            byte[] compressData = byteArrayOutputStream.toByteArray();
 
             //convert byte[] to base64 string
             String imageData = Base64.encodeToString(compressData, Base64.NO_WRAP);
 
             //post event to bus
             fliBeaconApplication.postEvent(new PictureTakenEvent(imageData));
+            Log.i(TAG, "time to compute: " + (System.currentTimeMillis() - start));
+            pictureProcessing = false;
         }
     };
+    private boolean pictureProcessing = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,15 +177,27 @@ public class MainActivity extends BaseActivity {
         final Collection<IBeacon> iBeacons = event.getBeacons();
         if (iBeacons.size() > 0) {
 
-            //CAPTURE IMAGE
-            if (camera != null) {
-                try {
-                    camera.startPreview();
-                    camera.takePicture(null, null, capturedImage);
-                }catch(Exception e) {
-                    Log.e(TAG, "Failed to take picture");
-                    e.printStackTrace();
-                }
+            if (!pictureProcessing) {
+                pictureProcessing = true;
+                AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+
+                    @Override
+                    protected Void doInBackground(Void... params) {
+                        //CAPTURE IMAGE
+                        if (camera != null) {
+                            try {
+                                Log.i(TAG, "taking picture");
+                                camera.startPreview();
+                                camera.takePicture(null, null, capturedImage);
+                            } catch (Exception e) {
+                                Log.e(TAG, "Failed to take picture");
+                                e.printStackTrace();
+                            }
+                        }
+                        return null;
+                    }
+                };
+                asyncTask.execute();
             }
 
             IBeacon iBeacon = iBeacons.iterator().next();

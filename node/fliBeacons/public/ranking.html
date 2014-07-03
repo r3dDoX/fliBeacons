@@ -20,17 +20,32 @@
             
         #rankingTable tbody tr td {
             padding: 16px;
+            border-bottom: 1px solid #4184f3;
+        }
+            
+        #rankingTable tbody tr:last-child td {
+            border-bottom: none;
+        }
+            
+        #rankingTable tbody tr {
             background-color: #c5d9fb;
+            
+            -webkit-transition: background-color 500ms linear;
+            transition: background-color 500ms linear;
+        }
+            
+        #rankingTable tbody tr.success {
+            background-color: #a6ffea;
         }
             
         #startGameButton {
             margin-top: 20px;
-            background: #4285f4;
+            background-color: #4285f4;
             color: #fff;
         }
 
         #startGameButton:hover {
-            background: #2a56c6;
+            background-color: #2a56c6;
         }
 
         #startGameButton::shadow #ripple {
@@ -71,7 +86,8 @@
             },
             
             renderBodyRows = function(ranking, history, tbody) {
-                var lastPoints = history.pop();
+                var lastPoints = history.pop(),
+                    successClass = 'success';
             
                 clearElement(tbody);
                 if (ranking.length > 0) {
@@ -84,6 +100,11 @@
                         rank.innerHTML = index + 1;
                         drone.innerHTML = element.drone.name;
                         points.innerHTML = element.points;
+                        
+                        if (lastPoints.drone && lastPoints.drone.beacon.uuid === element.drone.uuid) {
+                            row.classList.add(successClass);
+                            setTimeout(function() { row.classList.remove(successClass); }, 500);
+                        }
                         
                         appendChilds(tbody, appendChilds(row, rank, drone, points));
                     });
