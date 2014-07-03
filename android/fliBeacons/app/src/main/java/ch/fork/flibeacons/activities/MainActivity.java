@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.util.Base64;
 import android.util.Log;
