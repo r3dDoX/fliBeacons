@@ -32,12 +32,6 @@ paper-tabs {
 .container {
   width: 100%;
 }
-#drone {
-  padding: 8px;
-  position: relative;
-  border: 1px solid #ccc;
-  width: 360px;
-}
 #drone paper-input {
   width: 100%;
 }
