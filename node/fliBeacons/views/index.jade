@@ -6,6 +6,7 @@ block content
 			paper-tabs(selected="all", valueattr="name", self-end)
 				paper-tab(name="monitor") Monitor
 				paper-tab(name="game") Game
+				paper-tab(name="stations") Stations
 		.container(center)
 			.tools
 				paper-button#station Register base station
@@ -38,12 +39,12 @@ block content
 		#game-container(style="display: none")
 			#ranking
 				fli-ranking
-			#stations.clearfix
 			#map
 				fli-map
 			#livefeed
 				fli-livefeed
-
+		#stations-container(style="display: none")
+			#stations.clearfix
 	
 	script(src="/socket.io/socket.io.js")
 	script(src="javascripts/client.js")
