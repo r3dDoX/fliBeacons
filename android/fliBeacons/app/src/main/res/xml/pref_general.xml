@@ -9,12 +9,22 @@
         android:singleLine="true"
         android:title="@string/pref_title_baseStationName" />
     <ListPreference
-        android:defaultValue="http://flibeacons1.ngrok.com"
+        android:defaultValue="https://flibeacons1.ngrok.com"
         android:dialogTitle="@string/pref_url"
         android:entries="@array/pref_url_entries"
         android:entryValues="@array/pref_url_entries"
         android:key="url"
         android:title="@string/pref_url" />
+
+    <EditTextPreference
+        android:defaultValue="https://flibeacons1.ngrok.com"
+        android:dialogTitle="@string/pref_url"
+        android:inputType="text"
+        android:key="customUrl"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_url_custom" />
 
 
 </PreferenceScreen>

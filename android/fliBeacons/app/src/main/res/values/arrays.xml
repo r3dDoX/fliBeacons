@@ -3,6 +3,8 @@
     <string-array name="pref_url_entries">
         <item>http://flibeacons.ngrok.com</item>
         <item>http://flibeacons1.ngrok.com</item>
+        <item>https://flibeacons.ngrok.com</item>
+        <item>https://flibeacons1.ngrok.com</item>
         <item>http://192.168.2.2:3000</item>
         <item>http://192.168.2.1:3000</item>
         <item>http://192.168.43.204:3000</item>

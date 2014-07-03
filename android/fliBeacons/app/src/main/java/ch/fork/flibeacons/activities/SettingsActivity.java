@@ -10,6 +10,7 @@ public class SettingsActivity extends PreferenceActivity {
 
     public static final String KEY_BASESTATION_NAME = "baseStationName";
     public static final String KEY_URL = "url";
+    public static final String KEY_CUSTOM_URL = "customUrl";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

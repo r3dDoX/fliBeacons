@@ -92,7 +92,7 @@ public class MainActivity extends BaseActivity {
         public void onPictureTaken(final byte[] data, Camera camera) {
             long start = System.currentTimeMillis();
 
-            Bitmap bitmap = BitmapFactory.decodeByteArray(data,0,data.length);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
 
             //rotate image
             Matrix matrix = new Matrix();
@@ -199,7 +199,7 @@ public class MainActivity extends BaseActivity {
                 activeBaseStationSound.stop();
                 layoutContainer.setBackgroundColor(getResources().getColor(R.color.station_deactivated));
             }
-        }else if(event.getEvent().equals("finished")){
+        } else if (event.getEvent().equals("finished")) {
             Log.i(TAG, "Game is finished");
             activeBaseStationSound.stop();
             layoutContainer.setBackgroundColor(getResources().getColor(R.color.station_offline));
@@ -245,8 +245,8 @@ public class MainActivity extends BaseActivity {
             uuidRangeSV.removeAllViews();
             for (IBeacon iBeacon : iBeacons) {
                 View row = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.uuid_range_row, null);
-                ((TextView)row.findViewById(R.id.uuidTextView)).setText(iBeacon.getProximityUuid());
-                ((TextView)row.findViewById(R.id.rangeTextView)).setText(getRangeFromProximity(iBeacon));
+                ((TextView) row.findViewById(R.id.uuidTextView)).setText(iBeacon.getProximityUuid());
+                ((TextView) row.findViewById(R.id.rangeTextView)).setText(getRangeFromProximity(iBeacon));
                 uuidRangeSV.addView(row);
             }
         }
