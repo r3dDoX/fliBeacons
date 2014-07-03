@@ -85,6 +85,10 @@ var game = require('../game/game.js').game,
     
     gameState = function(req) {
         req.socket.emit(gameStateEvent, game.getGameState());
+    },
+    
+    getBaseStations = function(req) {
+        req.socket.emit(baseStationsEvent, baseStations);
     };
 
 exports.handlers = {
@@ -93,5 +97,6 @@ exports.handlers = {
     drone: drone,
     baseStation: baseStation,
     startCourse: startCourse,
-    gameState: gameState
+    gameState: gameState,
+    baseStations: getBaseStations
 };
