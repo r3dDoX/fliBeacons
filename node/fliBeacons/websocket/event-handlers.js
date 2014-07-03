@@ -11,7 +11,7 @@ var game = require('../game/game.js').game,
     
     removeBaseStationOnDisconnect = function(req) {
         baseStations = baseStations.filter(function(element) {
-            if (req.socket && element.socketId === req.socket.id) {
+            if (element.socketId === req) {
                 req.io.manager.sockets.in(monitorRoom).emit(baseStationRemovedEvent, element);
                 return false;
             }

@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -85,6 +86,7 @@ public class MainActivity extends BaseActivity {
         @Override
         public void onPictureTaken(final byte[] data, Camera camera) {
             long start = System.currentTimeMillis();
+
             //scale bitmap
             ByteArrayInputStream bis = new ByteArrayInputStream(data);
             Bitmap scaledBitmap = BitmapScaler.scaleToFitHeight(BitmapFactory.decodeStream(bis), IMAGE_HEIGHT);
@@ -133,6 +135,8 @@ public class MainActivity extends BaseActivity {
                 //stopCapturing();
             }
         });
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     protected void onResume() {
@@ -187,6 +191,8 @@ public class MainActivity extends BaseActivity {
                         if (camera != null) {
                             try {
                                 Log.i(TAG, "taking picture");
+                                Camera.Parameters param = camera.getParameters();
+                                param.setPictureSize(IMAGE_HEIGHT, IMAGE_HEIGHT);
                                 camera.startPreview();
                                 camera.takePicture(null, null, capturedImage);
                             } catch (Exception e) {
