@@ -19,6 +19,7 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import ch.fork.flibeacons.events.ConnectedEvent;
+import ch.fork.flibeacons.events.DisconnectedEvent;
 import ch.fork.flibeacons.events.ServerEvent;
 import ch.fork.flibeacons.services.FliBeaconDroneService;
 import ch.fork.flibeacons.services.FliBeaconLocationService;
@@ -173,6 +174,8 @@ public class FliBeaconApplication extends Application implements IOCallback {
 
     @Override
     public void onDisconnect() {
+        Log.i(TAG, "disconnected");
+        postEvent(new DisconnectedEvent());
 
     }
 

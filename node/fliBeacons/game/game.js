@@ -1,4 +1,4 @@
-var drones = [{name: 'drone', uuid: 'b9407f30-f5f8-466e-aff9-25556b57fe6d', major: 51881, minor: 16836}, {name:'human', uuid: 'asdf', major: 123, minor: 456}],
+var drones = [{name: 'drone', uuid: 'b9407f30-f5f8-466e-aff9-25556b57fe6d', major: 51881, minor: 16836}],
     baseStations = [],
     activeStation = 0,
     gameState = { isRunning: false },
@@ -31,6 +31,7 @@ var drones = [{name: 'drone', uuid: 'b9407f30-f5f8-466e-aff9-25556b57fe6d', majo
     initGameState = function() {
         gameState = {};
         gameState.isRunning = true;
+        gameState.started = new Date().getTime();
         gameState.ranking = initRanking();
         gameState.history = initHistory();
         gameState.activeStation = baseStations[activeStation];
@@ -71,6 +72,7 @@ var drones = [{name: 'drone', uuid: 'b9407f30-f5f8-466e-aff9-25556b57fe6d', majo
         if (activeStation === baseStations.length - 1) {
             addToHistory('Game finished');
             gameState.isRunning = false;
+            gameState.finished = new Date().getTime();
             sockets.emit(finishedEvent, gameState);
         } else {
             activeBaseStation = baseStations[++activeStation];
