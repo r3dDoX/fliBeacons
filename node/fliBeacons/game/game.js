@@ -82,7 +82,7 @@ var drones = [{name: 'drone', uuid: 'b9407f30-f5f8-466e-aff9-25556b57fe6d', majo
     },
     
     checkGameState = function(req, drone) {
-        if (drone.baseStationId === baseStations[activeStation].id && drone.proximity === 'immediate') {
+        if (gameState.isRunning && drone.baseStationId === baseStations[activeStation].id && drone.proximity === 'immediate') {
             moveOn(req, drone);
         }
     },
