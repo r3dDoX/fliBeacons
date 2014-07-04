@@ -43,12 +43,12 @@
 			background-color: #333;
 			border-radius: 50%;
 			display: block;
-			height: 24px;
+			height: 12px;
 			left: 50%;
-			margin-left: -12px;
+			margin-left: -16px;
 			position: absolute;
 			top: 0;
-			width: 24px;
+			width: 12px;
 			opacity: 0.7;
 			box-shadow: 1px 1px 4px #fff, -1px -1px 4px #fff;
 		}
@@ -56,15 +56,15 @@
 			top: 126px;
 		}
 		.far-multi .far.drone-1 {
-			margin-left: 56px;
+			margin-left: 36px;
 			margin-top: 24px;
 		}
 		.far-multi .far.drone-2 {
-			margin-left: -82px;
+			margin-left: -58px;
 			margin-top: 24px;
 		}
 		.near {
-			top: 188px;
+			top: 162px;
 		}
 		.near-multi .near.drone-1 {
 			margin-left: 18px;
@@ -75,7 +75,7 @@
 			top: 196px;
 		}
 		.immediate {
-			top: 234px;
+			top: 186px;
 			background-color: darkred;
 		}
 		.immediate-multi .immediate.drone-1 {
@@ -127,6 +127,10 @@
 			};
 		},
 		addDrone: function(drone) {
+			console.log(drone.beacon.uuid);
+			if (drone.beacon.uuid.toUpperCase() !== "B9407F30-F5F8-466E-AFF9-25556B57FE6D") {
+				return;
+			}
 			var el = renderDrone(drone),
 				proxDrones = this.drones[drone.proximity],
 				target = this.shadowRoot.querySelector("#drones");
@@ -142,10 +146,16 @@
 			target.appendChild(el);
 		},
 		removeDrone: function (drone) {
+			if (drone.beacon.uuid.toUpperCase() !== "B9407F30-F5F8-466E-AFF9-25556B57FE6D") {
+				return;
+			}
 			var droneEl = this.shadowRoot.getElementById(drone.beacon.uuid);
 			droneEl.parentNode.removeChild(droneEl);
 		},
 		moveDrone: function (drone) {
+			if (drone.beacon.uuid.toUpperCase() !== "B9407F30-F5F8-466E-AFF9-25556B57FE6D") {
+				return;
+			}
 			var droneEl = this.shadowRoot.getElementById(drone.beacon.uuid);
 			droneEl.classList.remove("near");
 			droneEl.classList.remove("far");
