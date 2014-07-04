@@ -12,6 +12,23 @@
     tools:context=".MainActivity">
 
     <LinearLayout
+        android:visibility="gone"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TX calibration value" />
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/calibrationValue" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -40,10 +57,16 @@
         android:textStyle="bold" />
 
     <ScrollView
-        android:id="@+id/uuid_range_sv"
         android:layout_width="fill_parent"
-        android:layout_height="100dp">
+        android:layout_height="150dp">
 
+        <LinearLayout
+            android:id="@+id/uuid_range_sv"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
+
+        </LinearLayout>
     </ScrollView>
 
     <TextView

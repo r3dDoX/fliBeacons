@@ -20,9 +20,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -55,7 +55,7 @@ public class MainActivity extends BaseActivity {
     protected static final String TAG = "RangingActivity";
     private static final int IMAGE_HEIGHT = 400;
     @InjectView(R.id.uuid_range_sv)
-    ScrollView uuidRangeSV;
+    LinearLayout uuidRangeSV;
     @InjectView(R.id.layout_container)
     LinearLayout layoutContainer;
     @InjectView(R.id.camera_preview)
@@ -66,6 +66,8 @@ public class MainActivity extends BaseActivity {
     Button stopRangingButton;
     @InjectView(R.id.log)
     TextView logTextview;
+    @InjectView(R.id.calibrationValue)
+    EditText calibrationValue;
     @Inject
     FliBeaconApplication fliBeaconApplication;
     private FliBeaconRangingService fliBeaconService;
@@ -276,6 +278,9 @@ public class MainActivity extends BaseActivity {
                 View row = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.uuid_range_row, null);
                 ((TextView) row.findViewById(R.id.uuidTextView)).setText(iBeacon.getProximityUuid());
                 ((TextView) row.findViewById(R.id.rangeTextView)).setText(getRangeFromProximity(iBeacon));
+                double accuracy = iBeacon.getAccuracy();
+                double distanceInt = (double) ((int) (accuracy * 10.0) / 10.0);
+                ((TextView) row.findViewById(R.id.distanceTextView)).setText(Double.valueOf(distanceInt).toString());
                 uuidRangeSV.addView(row);
             }
         }
