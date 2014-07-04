@@ -6,7 +6,6 @@
         tabs = q('paper-tabs'),
         monitor = q(".container"),
         game = q("#game-container"),
-        stationsTab = q("#stations-container"),
         socket = io.connect(),
         stationCreatedCount = 0,
         listeners = [],
@@ -43,14 +42,8 @@
         if (tabs.selected === 'monitor') {
             monitor.style.display = "block";
             game.style.display = "none";
-            stationsTab.style.display = "none";
-        } else if (tabs.selected === 'stations') {
-            monitor.style.display = "none";
-            stationsTab.style.display = "block";
-            game.style.display = "none";
         } else {
             monitor.style.display = "none";
-            stationsTab.style.display = "none";
             game.style.display = "block";
             global.messageBus.fire('mapSelected');
         }

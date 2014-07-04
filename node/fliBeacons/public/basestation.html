@@ -10,7 +10,7 @@
 			margin: 12px;
 			position: relative;
 			padding: 12px 4px 0 4px;
-			width: 280px;
+			width: 160px;
 		}
 		h1 {
 			border-bottom: 1px solid #999;
@@ -88,20 +88,20 @@
 		<h1>{{name}}</h1>
 		<div class="data-line">
 			<label>Location</label>
-			<span>{{lat}}/{{lng}}</span>
+			<span>{{lat}} / {{lng}}</span>
 		</div>
-		<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="280" height="140" class="station">
+		<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="140" height="70" class="station">
 			<defs>
 				<clipPath id="rectClip">
 					<rect id="rect1" x="0" y="0" 
-						width="280" height="140"
+						width="140" height="70"
 						style="stroke: gray; fill: none;"/>
 				</clipPath>
 			</defs>
 			<g clip-path="url(#rectClip)">
-				<circle id="base-circle" cx="140" cy="140" r="140" style="fill:#74ad82" />
-				<circle cx="140" cy="140" r="80" style="fill:#456a8e" />
-				<circle cx="140" cy="140" r="15" style="fill:#d19898" />
+				<circle id="base-circle" cx="70" cy="70" r="70" style="fill:#74ad82" />
+				<circle cx="70" cy="70" r="40" style="fill:#456a8e" />
+				<circle cx="70" cy="70" r="7" style="fill:#d19898" />
 			</g>
 		</svg>
 		<div id="drones"></div>

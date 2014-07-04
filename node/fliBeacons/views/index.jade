@@ -3,11 +3,19 @@ extends layout
 block content
 	core-header-panel
 		core-toolbar
-			paper-tabs(selected="all", valueattr="name", self-end)
-				paper-tab(name="monitor") Monitor
+			paper-tabs(selected="game", valueattr="name", self-end)
 				paper-tab(name="game") Game
-				paper-tab(name="stations") Stations
-		.container(center)
+				paper-tab(name="monitor") Monitor
+		#game-container
+			#status
+				#stations.clearfix
+				#ranking
+					fli-ranking
+				#livefeed
+					fli-livefeed
+			#map
+				fli-map
+		.container(center)(style="display: none")
 			.tools
 				paper-button#station Register base station
 				paper-button#drone-dialog Show Drone dialog
@@ -36,16 +44,6 @@ block content
 					.row
 						paper-button#send-drone(label="send drone event")
 			#log
-		#game-container(style="display: none")
-			#status
-				#ranking
-					fli-ranking
-				#livefeed
-					fli-livefeed
-			#map
-				fli-map
-		#stations-container(style="display: none")
-			#stations.clearfix
 	
 	script(src="/socket.io/socket.io.js")
 	script(src="javascripts/client.js")
