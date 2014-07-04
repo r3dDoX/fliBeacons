@@ -39,6 +39,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import ch.fork.flibeacons.FliBeaconApplication;
 import ch.fork.flibeacons.R;
+import ch.fork.flibeacons.events.DisconnectedEvent;
 import ch.fork.flibeacons.events.PictureTakenEvent;
 import ch.fork.flibeacons.events.RangeEvent;
 import ch.fork.flibeacons.events.ServerEvent;
@@ -185,6 +186,13 @@ public class MainActivity extends BaseActivity {
     protected void onPause() {
         super.onPause();
     }
+
+    @Subscribe
+    public void onDisconnectedEvent(DisconnectedEvent event) {
+        logTextview.setText("DISCONNECTED!!!!!!!!");
+        layoutContainer.setBackgroundColor(getResources().getColor(R.color.disconnected));
+    }
+
 
     @Subscribe
     public void onServerEvent(final ServerEvent event) {

@@ -3,4 +3,5 @@
     <color name="station_activated">#A1FFA7</color>
     <color name="station_deactivated">#FFA1A1</color>
     <color name="station_offline">#FFFFFF</color>
+    <color name="disconnected">#434f7b</color>
 </resources>
