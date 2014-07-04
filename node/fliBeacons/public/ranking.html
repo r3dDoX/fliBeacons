@@ -64,6 +64,11 @@
             <tbody>
                 
             </tbody>
+            <tfoot>
+                <tr>
+                    <th id="resultRow" colspan="3"></th>
+                </tr>
+            </tfoot>
         </table>
         
         <paper-button id="startGameButton" label="Start New Game!" raisedButton></paper-button>
@@ -114,6 +119,7 @@
         Polymer('fli-ranking', {
             ready: function () {
                 var shadowRoot = this.shadowRoot,
+                    resultRow = shadowRoot.getElementById('resultRow');
                     events = ['updated', 'finished', 'started', 'gameState'];
                 shadowRoot.querySelector('paper-button').addEventListener('click', function() { window.socket.emit('startCourse'); });
 
@@ -121,6 +127,12 @@
                     if (events.indexOf(event) > -1) {
                         if (data.isRunning === true || event === 'finished') {
                             renderBodyRows(data.ranking, data.history, shadowRoot.querySelector('table tbody'));
+                            
+                            if (event === 'finished') {
+                                resultRow.innerHTML = ((data.finished - data.started) / 1000) + ' sec';
+                            } else {
+                                resultRow.innerHTML = '';
+                            }
                         }
                     }
                 });
