@@ -35,7 +35,6 @@
         socket.emit('ready', {
             clientType: "monitor"
         });
-        console.log("ready emitted");
     });
 
     tabs.addEventListener('core-select', function () {
@@ -56,7 +55,6 @@
     }, false);
 
     q("#send-drone").addEventListener("click", function () {
-        console.log(q("#type [checked]").getAttribute("name"));
         socket.emit("drone", {
             type: q("#type [checked]").getAttribute("name"),
             proximity: q("#proximity [checked]").getAttribute("name"),

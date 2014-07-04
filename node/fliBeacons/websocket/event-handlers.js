@@ -56,7 +56,6 @@ var game = require('../game/game.js').game,
     },
     
     baseStation = function(req) {
-        console.log(req.data);
         var baseStation = req.data || {},
             baseStationEvent = baseStationAddedEvent,
             alreadyAddedBaseStation = function(element) {
@@ -71,7 +70,6 @@ var game = require('../game/game.js').game,
         baseStations = baseStations.filter(alreadyAddedBaseStation);
         
         baseStations.push(baseStation);
-        console.log(baseStationEvent, baseStation);
         req.io.manager.sockets.in(monitorRoom).emit(baseStationEvent, baseStation);
     },
     

@@ -26,18 +26,14 @@
 
 			Polymer('fli-map', {
 				ready: function () {
-					console.log("map is ready");
-
 					var shadowRoot = this.shadowRoot;
 					var map = shadowRoot.querySelector("google-map"),
 							stations = [];
 					global.messageBus.register(function (event, data) {
-						console.log(event, data);
 						if (event === 'mapSelected') {
 							map.resize();
 
 							map.map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
-							console.log(map);
 						} else if (event === 'baseStations') {
 							data.forEach(function (station) {
 								stations[station.id] = station;

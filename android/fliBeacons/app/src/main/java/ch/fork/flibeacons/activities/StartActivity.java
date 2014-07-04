@@ -76,6 +76,7 @@ public class StartActivity extends BaseActivity {
             Log.i(TAG, "Connecting to URL: " + url);
 
             SocketIO socket = new SocketIO(url);
+
             socket.setDefaultSSLSocketFactory(SSLContext.getDefault());
             fliBeaconApplication.setSocket(socket);
             socket.connect(fliBeaconApplication);
@@ -123,6 +124,7 @@ public class StartActivity extends BaseActivity {
 
     @Subscribe
     public void event(ConnectedEvent ev) {
+        fliBeaconApplication.getFliLocationService().start();
         startActivity(new Intent(StartActivity.this, MainActivity.class));
     }
 }

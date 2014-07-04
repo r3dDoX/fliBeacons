@@ -103,7 +103,7 @@ public class FliBeaconLocationService extends Service implements LocationListene
 
     public void start() {
 
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 100, this);
 
         Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         sendLocationUpdate(lastKnownLocation);
