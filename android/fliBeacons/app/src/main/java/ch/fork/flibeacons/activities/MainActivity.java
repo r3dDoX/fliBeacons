@@ -113,6 +113,7 @@ public class MainActivity extends BaseActivity {
             pictureProcessing = false;
         }
     };
+    private boolean isBaseStationActive = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,8 +144,6 @@ public class MainActivity extends BaseActivity {
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        activeBaseStationSound = MediaPlayer.create(getApplicationContext(), R.raw.basestation);
-        activeBaseStationSound.setLooping(true);
     }
 
     protected void onResume() {
@@ -167,6 +166,9 @@ public class MainActivity extends BaseActivity {
         super.onStart();
         Intent intent = new Intent(this, FliBeaconRangingService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+
+        activeBaseStationSound = MediaPlayer.create(getApplicationContext(), R.raw.basestation);
+        activeBaseStationSound.setLooping(true);
     }
 
     @Override
@@ -185,25 +187,44 @@ public class MainActivity extends BaseActivity {
     }
 
     @Subscribe
-    public void onServerEvent(ServerEvent event) {
-        Log.i(TAG, "Got server event" + event.getEvent());
-        logTextview.setText(event.getEvent());
-        if (event.getEvent().equals("activate")) {
-            BaseStation activeBaseStation = new Gson().fromJson(event.getArgs()[0], BaseStation.class);
-            if (activeBaseStation.getId().equals(fliBeaconApplication.getBaseStationUUID())) {
-                Log.i(TAG, "This is the active base station!");
-                activeBaseStationSound.start();
-                layoutContainer.setBackgroundColor(getResources().getColor(R.color.station_activated));
-            } else {
-                Log.i(TAG, "Not the active base station!");
-                activeBaseStationSound.stop();
-                layoutContainer.setBackgroundColor(getResources().getColor(R.color.station_deactivated));
+    public void onServerEvent(final ServerEvent event) {
+        logTextview.post(new Runnable() {
+            @Override
+            public void run() {
+                if (event.getEvent().equals("drone")) {
+                    return;
+                }
+                Log.i(TAG, "Got server event " + event.getEvent());
+                logTextview.setText(event.getEvent());
+                if (event.getEvent().equals("activate")) {
+                    isBaseStationActive = true;
+                    BaseStation activeBaseStation = new Gson().fromJson(event.getArgs()[0], BaseStation.class);
+                    if (activeBaseStation.getId().equals(fliBeaconApplication.getBaseStationUUID())) {
+                        Log.i(TAG, "This is the active base station!");
+                        activeBaseStationSound.start();
+                        layoutContainer.setBackgroundColor(getResources().getColor(R.color.station_activated));
+                    } else {
+                        Log.i(TAG, "Not the active base station!");
+                        isBaseStationActive = false;
+                        activeBaseStationSound.stop();
+
+                        activeBaseStationSound = MediaPlayer.create(getApplicationContext(), R.raw.basestation);
+                        activeBaseStationSound.setLooping(true);
+                        layoutContainer.setBackgroundColor(getResources().getColor(R.color.station_deactivated));
+                    }
+                } else if (event.getEvent().equals("finished")) {
+                    Log.i(TAG, "Game is finished");
+                    isBaseStationActive = false;
+                    activeBaseStationSound.stop();
+
+
+                    activeBaseStationSound = MediaPlayer.create(getApplicationContext(), R.raw.basestation);
+                    activeBaseStationSound.setLooping(true);
+                    layoutContainer.setBackgroundColor(getResources().getColor(R.color.station_offline));
+                }
             }
-        } else if (event.getEvent().equals("finished")) {
-            Log.i(TAG, "Game is finished");
-            activeBaseStationSound.stop();
-            layoutContainer.setBackgroundColor(getResources().getColor(R.color.station_offline));
-        }
+        });
+
     }
 
     @Subscribe
@@ -211,7 +232,7 @@ public class MainActivity extends BaseActivity {
         final Collection<IBeacon> iBeacons = event.getBeacons();
         if (iBeacons.size() > 0) {
 
-            if (!pictureProcessing) {
+            if (!pictureProcessing && isBaseStationActive) {
                 pictureProcessing = true;
                 AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
 
